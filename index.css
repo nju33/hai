@@ -1,0 +1,20 @@
+.wrapper {
+  padding: 200px 0 200px 400px;
+}
+
+.hai {
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: .5em .8em;
+  background: #e98b2a;
+  border-radius: 3px;
+  cursor: pointer;
+  color: hsla(0, 0%, 0%, .55);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}

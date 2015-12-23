@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>HaiJS</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <div class="wrapper">
+    <a role="button" id="hai" class="hai">Button</a>
+  </div>
+
+  <script src="index.js"></script>
+  <script>
+hai
+  .create({
+    title: '本当にいいですか？',
+    positiveText: 'はい',
+    negativeText: 'いいえ'
+  })
+  .bind({
+    element: '#hai'
+  })
+  .on({
+    positiveClick: function() {
+      alert('Positive!!!');
+    },
+    negativeClick: function() {
+      alert('Negative!!!');
+    }
+  });
+  </script>
+
+</body>
+</html>
