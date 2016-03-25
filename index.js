@@ -48,6 +48,12 @@ Hai.prototype.show = function show(e) {
 
     var scrollTop = 0;
     var scrollLeft = 0;
+    if (this.opts.scrollables) {
+      lockScroll(this.opts.scrollables);
+      var scrollVal = calcScrollVal(this.opts.scrollables)
+      scrollLeft = scrollVal.left;
+      scrollTop = scrollVal.top;
+    }
 
     if (this._el == null) {
       this.btns = generateButtonEls.call(this);
@@ -62,11 +68,6 @@ Hai.prototype.show = function show(e) {
     }
     addBtnHandler.call(this);
 
-    if (this.opts.scrollables) {
-      var scrollVal = calcScrollVal(this.opts.scrollables)
-      scrollLeft = scrollVal.left;
-      scrollTop = scrollVal.top;
-    }
     move(this._el, e.clientX, e.clientY, scrollLeft, scrollTop);
     setTimeout(function() {
       active(this._el);
@@ -101,7 +102,13 @@ Hai.prototype.hide = function hide() {
     clearTimeout(this._timeoutId);
     this._timeoutId = null;
   }
+
   removeBtnHandler.call(this);
+
+  if (this.opts.scrollables) {
+    unlockScroll(this.opts.scrollables);
+  }
+
   inactive(this._el);
 }
 
@@ -182,6 +189,18 @@ function active(el) {
 function inactive(el) {
   el.style.height = 0;
   el.className = 'hai__box';
+}
+
+function lockScroll(els) {
+  for (var i = 0, len = els.length; i < len; i++) {
+    els[i].style.overflow = 'hidden';
+  }
+}
+
+function unlockScroll(els) {
+  for (var i = 0, len = els.length; i < len; i++) {
+    els[i].style.overflow = null;
+  }
 }
 
 function injectStyle() {
