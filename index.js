@@ -10,10 +10,21 @@ function Hai(/* caption, ...btns, opts */) {
 
   this.caption = arguments[0];
   this.btns = Array.prototype.slice.call(arguments, 1);
-  this.opts = {};
+
+  this.opts = {
+    timeout: false,
+    coverEvent: true,
+  };
   if (typeof lastArg === 'object') {
-    this.opts = this.btns.pop();
+    var opts = this.btns.pop();
+    if (opts.timeout != null) {
+      this.opts.timeout = opts.timeout;
+    }
+    if (opts.coverEvent != null) {
+      this.opts.coverEvent = opts.coverEvent;
+    }
   }
+
   this.callback = null;
   this._el = null;
   this._events = [];
@@ -38,7 +49,9 @@ Hai.prototype.show = (function() {
         this._el = document.createElement('div');
         this._el.className = 'hai__box';
         this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
-        this._el.children[0].addEventListener('click', this.hide.bind(this));
+        if (this.opts.coverEvent) {
+          this._el.children[0].addEventListener('click', this.hide.bind(this));
+        }
         insertBtn(this._el, btnEls);
         insert(this._el);
       }
