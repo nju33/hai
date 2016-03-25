@@ -12,8 +12,11 @@
     <a role="button" id="b2" class="hai">Button</a>
     <a role="button" id="b3" class="hai">Button</a>
 
-    <div style="position:relative;margin-top:1em;">
+    <div style="position:relative;top:1em;">
       <a role="button" id="b4" class="hai">Button</a>
+    </div>
+    <div style="position:fixed;bottom:1em;right:1em;">
+      <a role="button" id="b5" class="hai">Button</a>
     </div>
   </div>
 
@@ -62,6 +65,12 @@ document.getElementById('b4').addEventListener('click', function(e) {
   e.preventDefault();
   var a = hai1.show(e).then(function() {
     alert('Duplicated');
+  });
+});
+document.getElementById('b5').addEventListener('click', function(e) {
+  e.preventDefault();
+  var a = hai1.show(e).then(function() {
+    alert('adjust');
   });
 });
 </script>

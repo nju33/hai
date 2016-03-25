@@ -176,6 +176,14 @@ function move(el, left, top, scrollLeft, scrollTop) {
   left -= WIDTH / 2;
   left += scrollLeft;
   top += scrollTop;
+
+  if (window.innerWidth < el.children[1].clientWidth + left) {
+    left = left - (el.children[1].clientWidth + left - window.innerWidth)
+  }
+  if (window.innerHeight < el.children[1].clientHeight + top) {
+    top = top - (el.children[1].clientHeight + top - window.innerHeight)
+  }
+
   el.style.left = left + 'px';
   el.style.top = top + 'px';
 }
