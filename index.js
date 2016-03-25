@@ -27,6 +27,7 @@ function Hai(/* caption, ...btns, opts */) {
 
   this.callback = null;
   this._el = null;
+  this._timeoutId = null;
   this._events = [];
 
   if (!exists) {
@@ -60,7 +61,7 @@ Hai.prototype.show = function show(e) {
 
     if (this.opts.timeout) {
       try {
-        setTimeout(this.hide.bind(this), this.opts.timeout);
+        this._timeoutId = setTimeout(this.hide.bind(this), this.opts.timeout);
       } catch (e) {
         throw Error(e);
       }
@@ -83,6 +84,10 @@ Hai.prototype.show = function show(e) {
 }
 
 Hai.prototype.hide = function hide() {
+  if (this._timeoutId) {
+    clearTimeout(this._timeoutId);
+    this._timeoutId = null;
+  }
   inactive(this._el);
 }
 
