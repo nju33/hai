@@ -43,16 +43,17 @@ Hai.prototype.show = function show(e) {
     }
 
     if (this._el == null) {
-      var btnEls = generateButtonEls.call(this);
+      this.btns = generateButtonEls.call(this);
       this._el = document.createElement('div');
       this._el.className = 'hai__box';
-      this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
+      this._el.innerHTML = generateInnerHTML(this.caption, this.btns);
       if (this.opts.coverEvent) {
         this._el.children[0].addEventListener('click', this.hide.bind(this));
       }
-      insertBtn(this._el, btnEls);
+      insertBtn(this._el, this.btns);
       insert(this._el);
     }
+    addBtnHandler.call(this);
 
     move(this._el, e.clientX, e.clientY);
     setTimeout(function() {
@@ -88,6 +89,7 @@ Hai.prototype.hide = function hide() {
     clearTimeout(this._timeoutId);
     this._timeoutId = null;
   }
+  removeBtnHandler.call(this);
   inactive(this._el);
 }
 
@@ -109,13 +111,24 @@ function generateButtonEls(btns) {
     a.setAttribute('role', 'button');
     a.className = 'hai__btn';
     a.innerText = this.btns[i];
-
-    var handle = this.callback.bind(null, i);
-    a.addEventListener('click', handle, false);
-    this._events.push(handle);
     btnEls.push(a);
   }
   return btnEls;
+}
+
+function addBtnHandler() {
+  for (var i = 0, len = this.btns.length; i < len; i++) {
+    var handle = this.callback.bind(null, i);
+    this.btns[i].addEventListener('click', handle, false);
+    this._events.push(handle);
+  }
+}
+
+function removeBtnHandler() {
+  for (var i = 0, len = this.btns.length; i < len; i++) {
+    this.btns[i].removeEventListener('click', this._events[i], false);
+  }
+  this._events = [];
 }
 
 function insert(el) {
