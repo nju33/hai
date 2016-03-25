@@ -35,56 +35,52 @@ function Hai(/* caption, ...btns, opts */) {
   }
 }
 
-Hai.prototype.show = (function() {
-  var cb;
+Hai.prototype.show = function show(e) {
+  setTimeout(function() {
+    if (!this.callback) {
+      return;
+    }
 
-  return function show(e) {
+    if (this._el == null) {
+      var btnEls = generateButtonEls.call(this);
+      this._el = document.createElement('div');
+      this._el.className = 'hai__box';
+      this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
+      if (this.opts.coverEvent) {
+        this._el.children[0].addEventListener('click', this.hide.bind(this));
+      }
+      insertBtn(this._el, btnEls);
+      insert(this._el);
+    }
+
+    move(this._el, e.clientX, e.clientY);
     setTimeout(function() {
-      if (!this.callback) {
-        return;
-      }
-
-      if (this._el == null) {
-        var btnEls = generateButtonEls.call(this);
-        this._el = document.createElement('div');
-        this._el.className = 'hai__box';
-        this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
-        if (this.opts.coverEvent) {
-          this._el.children[0].addEventListener('click', this.hide.bind(this));
-        }
-        insertBtn(this._el, btnEls);
-        insert(this._el);
-      }
-
-      move(this._el, e.clientX, e.clientY);
-      setTimeout(function() {
-        active(this._el);
-      }.bind(this), 0);
-
-      if (this.opts.timeout) {
-        try {
-          setTimeout(this.hide.bind(this), this.opts.timeout);
-        } catch (e) {
-          throw Error(e);
-        }
-      }
+      active(this._el);
     }.bind(this), 0);
-    return {
-      then: function(callback) {
-        if (typeof callback !== 'function') {
-          throw Error('Please specify the function');
-        }
-        this.callback = (function(callback) {
-          var _this = this;
-          return function(idx) {
-            callback(idx);
-            this.hide();
-          };
-        }).call(this, callback);
-      }.bind(this),
-    };
-  }
-})();
+
+    if (this.opts.timeout) {
+      try {
+        setTimeout(this.hide.bind(this), this.opts.timeout);
+      } catch (e) {
+        throw Error(e);
+      }
+    }
+  }.bind(this), 0);
+  return {
+    then: function(callback) {
+      if (typeof callback !== 'function') {
+        throw Error('Please specify the function');
+      }
+      this.callback = (function(callback) {
+        var _this = this;
+        return function(idx) {
+          callback(idx);
+          _this.hide();
+        };
+      }).call(this, callback);
+    }.bind(this),
+  };
+}
 
 Hai.prototype.hide = function hide() {
   inactive(this._el);
