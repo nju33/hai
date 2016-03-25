@@ -1,56 +1,175 @@
-let handle;
-const cache = {};
+var exists = false;
 
-const handler = {
-  exec: function exec(id, cap, btns) {
-    const id = document.getElementById(id);
-    if (id) {
-      throw Error(`Not found id: ${id}`);
-    }
+var WIDTH = 120;
 
-    cache[id] = this.generate(cap, btns);
-  },
-  add: function(cap, btns) {
-    const el = generateDOM(cap, btns);
-    document.getElementsByTagName('body')[0].appendChild(el);
-  },
-}
-
-
-export default function hai(id, cap, ...btns) {
-  if (btns.length) {
-    throw Error('err');
+function Hai(/* caption, ...btns, opts */) {
+  var lastArg = arguments[arguments.length - 1];
+  if (lastArg == null) {
+    throw Error('Button is required');
   }
 
-  setTimeout(handler.exec.bind(handler, id, cap, btns), 0);
+  this.caption = arguments[0];
+  this.btns = Array.prototype.slice.call(arguments, 1);
+  if (typeof lastArg === 'object') {
+    this.opts = this.btns.pop();
+  }
+  this.callback = null;
+  this._el = null;
+  this._events = [];
 
-  return {
-    then(_handle) {
-      handle = _handle;
-    }
-  };
+  if (!exists) {
+    injectStyle();
+    exists = true;
+  }
 }
 
-function generateDOM(cap, btns) {
-  const templateBtn = (function() {
-    let result = '';
+Hai.prototype.show = (function() {
+  var cb;
 
-    for (let i = 0, len = btns.length; i < len; i++) {
-      result += `
-        <a>${btns[i]}</a>
-      `;
-    }
-  })();
-  const templateAll = `
-    <div class="hai__box">
-      <div class="hai__header">
-        <span class="hai__cap">${cap}</span>
-      </div>
-      <div class="hai__body">
-      </div>
-    </div>
-  `;
-  const hai = document.createElement('div');
-  hai.outerHTML = templateAll;
-  return hai;
+  return function show(e) {
+    setTimeout(function() {
+      if (!this.callback) {
+        return;
+      }
+
+      if (this._el == null) {
+        var btnEls = generateButtonEls.call(this);
+        this._el = document.createElement('div');
+        this._el.className = 'hai__box';
+        this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
+        insertBtn(this._el, btnEls);
+        insert(this._el);
+      }
+
+      move(this._el, e.clientX, e.clientY);
+      setTimeout(function() {
+        active(this._el);
+      }.bind(this), 0);
+    }.bind(this), 0);
+    return {
+      then: function(callback) {
+        if (typeof callback !== 'function') {
+          throw Error('Please specify the function');
+        }
+        this.callback = (function(callback) {
+          var _this = this;
+          return function(idx) {
+            callback(idx);
+            inactive(_this._el);
+          };
+        }).call(this, callback);
+      }.bind(this),
+    };
+  }
+})();
+
+function generateInnerHTML(caption, btnEls) {
+  return '<div class="hai__inner">' +
+           '<div class="hai__header">' +
+             '<span class="hai__caption">' + caption + '</span>' +
+           '</div>' +
+           '<div class="hai__body hai__btns--' + btnEls.length + '">' +
+           '</div>' +
+         '</div>';
+}
+
+function generateButtonEls(btns) {
+  var btnEls = [];
+  for (var i = 0, len = this.btns.length; i < len; i++) {
+    var a = document.createElement('a');
+    a.setAttribute('role', 'button');
+    a.className = 'hai__btn';
+    a.innerText = this.btns[i];
+
+    var handle = this.callback.bind(null, i);
+    a.addEventListener('click', handle, false);
+    this._events.push(handle);
+    btnEls.push(a);
+  }
+  return btnEls;
+}
+
+function insert(el) {
+  document.body.appendChild(el);
+}
+
+function insertBtn(parentEl, btnEls) {
+  var btnBody = parentEl.children[0].children[1];
+  for (var i = 0, len = btnEls.length; i < len; i++) {
+    btnBody.appendChild(btnEls[i]);
+  }
+}
+
+function move(el, left, top) {
+  left -= WIDTH / 2;
+  el.style.left = left + 'px';
+  el.style.top = top + 'px';
+}
+
+function active(el) {
+  var height = el.children[0].clientHeight;
+  el.style.height = height + 'px';
+  el.className += ' hai__box--active';
+}
+
+function inactive(el) {
+  el.style.height = 0;
+  el.className = 'hai__box';
+}
+
+function injectStyle() {
+  var style = document.createElement('style');
+  var css = '.hai__box {' +
+              'position: absolute;' +
+              'overflow: hidden;' +
+              'width: ' + WIDTH + 'px;' +
+              'height: 0;' +
+              '-webkit-transition: .2s linear height;' +
+              'transition: .2s linear height;' +
+            '}' +
+            '.hai__box:before {' +
+              'content: "";' +
+              'position: fixed;' +
+              'display: block;' +
+              'left: 0;' +
+              'top: 0;' +
+              '-webkit-transition: .2s linear;' +
+              'transition: .2s linear;' +
+            '}' +
+            '.hai__box--active:before {' +
+              'width: ' + window.innerWidth + 'px;' +
+              'height: ' + window.innerHeight + 'px;' +
+              'background: hsla(0, 0%, 0%, .3);' +
+            '}' +
+            '.hai__inner {' +
+              'position: relative;' +
+              'z-index: 99999;' +
+              'background: #e98b2a;' +
+            '}' +
+            '.hai__header {' +
+              'text-align: center;' +
+              'font-weight: bold;' +
+              'box-sizing: border-box;' +
+              'padding: .5em;' +
+            '}' +
+            '.hai__body {' +
+              'border-top: 1px solid hsla(0, 0%, 0%, .1);' +
+            '}' +
+            '.hai__btns--1 {' +
+              'text-align: center;' +
+            '}' +
+            '.hai__btn {' +
+              'display: block;' +
+              'padding: .5em;' +
+              'cursor: pointer;' +
+              'background: #f0b16f;' +
+              '-webkit-transition: .2s linear background;' +
+              'transition: .2s linear background;' +
+            '}' +
+            '.hai__btn:active {' +
+              'background: #f0bc6f;' +
+            '}'
+            ;
+  style.innerHTML = css;
+  document.head.appendChild(style);
 }
