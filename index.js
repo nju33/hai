@@ -14,6 +14,7 @@ function Hai(/* caption, ...btns, opts */) {
   this.opts = {
     timeout: false,
     coverEvent: true,
+    scrollables: [document.body]
   };
   if (typeof lastArg === 'object') {
     var opts = this.btns.pop();
@@ -22,6 +23,9 @@ function Hai(/* caption, ...btns, opts */) {
     }
     if (opts.coverEvent != null) {
       this.opts.coverEvent = opts.coverEvent;
+    }
+    if (opts.scrollables != null) {
+      this.opts.scrollables = opts.scrollables;
     }
   }
 
@@ -42,6 +46,9 @@ Hai.prototype.show = function show(e) {
       return;
     }
 
+    var scrollTop = 0;
+    var scrollLeft = 0;
+
     if (this._el == null) {
       this.btns = generateButtonEls.call(this);
       this._el = document.createElement('div');
@@ -55,7 +62,12 @@ Hai.prototype.show = function show(e) {
     }
     addBtnHandler.call(this);
 
-    move(this._el, e.clientX, e.clientY);
+    if (this.opts.scrollables) {
+      var scrollVal = calcScrollVal(this.opts.scrollables)
+      scrollLeft = scrollVal.left;
+      scrollTop = scrollVal.top;
+    }
+    move(this._el, e.clientX, e.clientY, scrollLeft, scrollTop);
     setTimeout(function() {
       active(this._el);
     }.bind(this), 0);
@@ -135,6 +147,17 @@ function insert(el) {
   document.body.appendChild(el);
 }
 
+function calcScrollVal(els) {
+  var left = 0;
+  var top = 0;
+
+  for (var i = 0, len = els.length; i < len; i++) {
+    left += els[i].scrollLeft;
+    top += els[i].scrollTop;
+  }
+  return {left: left, top: top};
+}
+
 function insertBtn(parentEl, btnEls) {
   var btnBody = parentEl.children[1].children[1];
   for (var i = 0, len = btnEls.length; i < len; i++) {
@@ -142,8 +165,10 @@ function insertBtn(parentEl, btnEls) {
   }
 }
 
-function move(el, left, top) {
+function move(el, left, top, scrollLeft, scrollTop) {
   left -= WIDTH / 2;
+  left += scrollLeft;
+  top += scrollTop;
   el.style.left = left + 'px';
   el.style.top = top + 'px';
 }
