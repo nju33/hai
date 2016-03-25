@@ -10,6 +10,7 @@ function Hai(/* caption, ...btns, opts */) {
 
   this.caption = arguments[0];
   this.btns = Array.prototype.slice.call(arguments, 1);
+  this.opts = {};
   if (typeof lastArg === 'object') {
     this.opts = this.btns.pop();
   }
@@ -46,6 +47,14 @@ Hai.prototype.show = (function() {
       setTimeout(function() {
         active(this._el);
       }.bind(this), 0);
+
+      if (this.opts.timeout) {
+        try {
+          setTimeout(this.hide.bind(this), this.opts.timeout);
+        } catch (e) {
+          throw Error(e);
+        }
+      }
     }.bind(this), 0);
     return {
       then: function(callback) {
