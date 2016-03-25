@@ -21,48 +21,44 @@
 // });
 
 var hai1 = new Hai('Good?', 'yes', {timeout: 3000});
-// var hai2 = new Hai('Fish or Meat?', 'Fish', 'Meat');
-// var hai3 = new Hai('What to eat?', 'Beef', 'Poke' ,'Chicken');
+var hai2 = new Hai('Fish or Meat?', 'Fish', 'Meat');
+var hai3 = new Hai('What to eat?', 'Beef', 'Poke' ,'Chicken');
 
 document.getElementById('b1').addEventListener('click', function(e) {
   e.preventDefault();
   var a = hai1.show(e).then(function() {
-    console.log('click');
+    alert('yes');
   });
 });
-//   hai1(e.target).then(function() {
-//     alert('hai1');
-//   });
-// });
-// document.getElementById('b2').addEventListener('click', function(e) {
-//   e.preventDefault();
-//   hai2().then(function((btnId)) {
-//     switch (btnId) {
-//       case 0:
-//         alert('Fish');
-//         break;
-//       case 1:
-//         alert('Meat');
-//         break;
-//     }
-//   });
-// });
-// document.getElementById('b3').addEventListener('click', function(e) {
-//   e.preventDefault();
-//   hai3().then(function() {
-//     switch (btnId) {
-//       case 0:
-//         alert('Fish');
-//         break;
-//       case 1:
-//         alert('Meat');
-//         break;
-//       case 2:
-//         alert('Nothing');
-//         break;
-//     }
-//   });
-// });
+document.getElementById('b2').addEventListener('click', function(e) {
+  e.preventDefault();
+  hai2.show(e).then(function(btnId) {
+    switch (btnId) {
+      case 0:
+        alert('Fish');
+        break;
+      case 1:
+        alert('Meat');
+        break;
+    }
+  });
+});
+document.getElementById('b3').addEventListener('click', function(e) {
+  e.preventDefault();
+  hai3.show(e).then(function(btnId) {
+    switch (btnId) {
+      case 0:
+        alert('Fish');
+        break;
+      case 1:
+        alert('Meat');
+        break;
+      case 2:
+        alert('Nothing');
+        break;
+    }
+  });
+});
 </script>
 </body>
 </html>

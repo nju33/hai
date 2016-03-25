@@ -122,7 +122,7 @@ function injectStyle() {
   var css = '.hai__box {' +
               'position: absolute;' +
               'overflow: hidden;' +
-              'width: ' + WIDTH + 'px;' +
+              'min-width: ' + WIDTH + 'px;' +
               'height: 0;' +
               '-webkit-transition: .2s linear height;' +
               'transition: .2s linear height;' +
@@ -150,17 +150,17 @@ function injectStyle() {
               'text-align: center;' +
               'font-weight: bold;' +
               'box-sizing: border-box;' +
-              'padding: .5em;' +
+              'padding: .7em;' +
             '}' +
             '.hai__body {' +
+              'overflow: hidden;' +
               'border-top: 1px solid hsla(0, 0%, 0%, .1);' +
-            '}' +
-            '.hai__btns--1 {' +
               'text-align: center;' +
             '}' +
             '.hai__btn {' +
               'display: block;' +
-              'padding: .5em;' +
+              'box-sizing: border-box;' +
+              'padding: .7em;' +
               'cursor: pointer;' +
               'background: #f0b16f;' +
               '-webkit-transition: .2s linear background;' +
