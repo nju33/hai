@@ -37,6 +37,7 @@ Hai.prototype.show = (function() {
         this._el = document.createElement('div');
         this._el.className = 'hai__box';
         this._el.innerHTML = generateInnerHTML(this.caption, btnEls);
+        this._el.children[0].addEventListener('click', this.hide.bind(this));
         insertBtn(this._el, btnEls);
         insert(this._el);
       }
@@ -55,7 +56,7 @@ Hai.prototype.show = (function() {
           var _this = this;
           return function(idx) {
             callback(idx);
-            inactive(_this._el);
+            this.hide();
           };
         }).call(this, callback);
       }.bind(this),
@@ -63,8 +64,13 @@ Hai.prototype.show = (function() {
   }
 })();
 
+Hai.prototype.hide = function hide() {
+  inactive(this._el);
+}
+
 function generateInnerHTML(caption, btnEls) {
-  return '<div class="hai__inner">' +
+  return '<div class="hai__cover"></div>' +
+         '<div class="hai__inner">' +
            '<div class="hai__header">' +
              '<span class="hai__caption">' + caption + '</span>' +
            '</div>' +
@@ -94,7 +100,7 @@ function insert(el) {
 }
 
 function insertBtn(parentEl, btnEls) {
-  var btnBody = parentEl.children[0].children[1];
+  var btnBody = parentEl.children[1].children[1];
   for (var i = 0, len = btnEls.length; i < len; i++) {
     btnBody.appendChild(btnEls[i]);
   }
@@ -107,7 +113,7 @@ function move(el, left, top) {
 }
 
 function active(el) {
-  var height = el.children[0].clientHeight;
+  var height = el.children[1].clientHeight;
   el.style.height = height + 'px';
   el.className += ' hai__box--active';
 }
@@ -127,16 +133,14 @@ function injectStyle() {
               '-webkit-transition: .2s linear height;' +
               'transition: .2s linear height;' +
             '}' +
-            '.hai__box:before {' +
-              'content: "";' +
+            '.hai__cover {' +
               'position: fixed;' +
-              'display: block;' +
               'left: 0;' +
               'top: 0;' +
               '-webkit-transition: .2s linear;' +
               'transition: .2s linear;' +
             '}' +
-            '.hai__box--active:before {' +
+            '.hai__box--active .hai__cover {' +
               'width: ' + window.innerWidth + 'px;' +
               'height: ' + window.innerHeight + 'px;' +
               'background: hsla(0, 0%, 0%, .3);' +
