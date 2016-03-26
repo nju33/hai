@@ -1,0 +1,28 @@
+{
+  "name": "hai.js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "hai.js",
+  "scripts": {
+    "build": "rollup -c",
+    "prestart": "npm run build",
+    "start": "chokidar lib/hai.js -c 'npm run build'",
+    "prepublish": "uglifyjs hai.js -o hai.min.js --comments all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/totora0155/hai.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/totora0155/hai.js/issues"
+  },
+  "homepage": "https://github.com/totora0155/hai.js#readme",
+  "devDependencies": {
+    "chokidar-cli": "^1.2.0",
+    "rollup": "^0.25.6",
+    "uglify-js": "^2.6.2"
+  }
+}
