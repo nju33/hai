@@ -14,8 +14,6 @@ export default {
   dest: 'dist/hai.js',
   moduleName: 'Hai',
   plugins: [
-    babel({
-      externalHelpers: true
-    })
+    babel()
   ]
 };
