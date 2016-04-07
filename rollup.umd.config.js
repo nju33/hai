@@ -14,6 +14,8 @@ export default {
   dest: 'dist/hai.js',
   moduleName: 'Hai',
   plugins: [
-    babel()
+    babel({
+      exclude: 'node_modules/**'
+    })
   ]
 };

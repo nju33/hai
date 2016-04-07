@@ -1,0 +1,242 @@
+/*!
+ * Copyright 2016, nju33
+ * Released under the MIT License
+ * https://github.com/totora0155/hai.js
+ */
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global.Hai = factory());
+}(this, function () { 'use strict';
+
+  var babelHelpers = {};
+  babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  };
+
+  babelHelpers.classCallCheck = function (instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+      throw new TypeError("Cannot call a class as a function");
+    }
+  };
+
+  babelHelpers;
+
+  var exists = false;
+
+  var WIDTH = 120;
+
+  function Hai() {
+    var lastArg = arguments[arguments.length - 1];
+    if (lastArg == null) {
+      throw Error('Button is required');
+    }
+
+    this.caption = arguments[0];
+    this.btns = Array.prototype.slice.call(arguments, 1);
+
+    this.opts = {
+      timeout: false,
+      coverEvent: true,
+      scrollables: [document.body]
+    };
+    if ((typeof lastArg === 'undefined' ? 'undefined' : babelHelpers.typeof(lastArg)) === 'object') {
+      var opts = this.btns.pop();
+      if (opts.timeout != null) {
+        this.opts.timeout = opts.timeout;
+      }
+      if (opts.coverEvent != null) {
+        this.opts.coverEvent = opts.coverEvent;
+      }
+      if (opts.scrollables != null) {
+        this.opts.scrollables = opts.scrollables;
+      }
+    }
+
+    this.callback = null;
+    this._el = null;
+    this._timeoutId = null;
+    this._events = [];
+
+    if (!exists) {
+      injectStyle();
+      exists = true;
+    }
+  }
+
+  Hai.prototype.show = function show(e) {
+    setTimeout(function () {
+      if (!this.callback) {
+        return;
+      }
+
+      var scrollTop = 0;
+      var scrollLeft = 0;
+      if (this.opts.scrollables) {
+        lockScroll(this.opts.scrollables);
+        var scrollVal = calcScrollVal(this.opts.scrollables);
+        scrollLeft = scrollVal.left;
+        scrollTop = scrollVal.top;
+      }
+
+      if (this._el == null) {
+        this.btns = generateButtonEls.call(this);
+        this._el = document.createElement('div');
+        this._el.className = 'hai__box';
+        this._el.innerHTML = generateInnerHTML(this.caption, this.btns);
+        if (this.opts.coverEvent) {
+          this._el.children[0].addEventListener('click', this.hide.bind(this));
+        }
+        insertBtn(this._el, this.btns);
+        insert(this._el);
+      }
+      addBtnHandler.call(this);
+
+      move(this._el, e.clientX, e.clientY, scrollLeft, scrollTop);
+      setTimeout(function () {
+        active(this._el);
+      }.bind(this), 0);
+
+      if (this.opts.timeout) {
+        try {
+          this._timeoutId = setTimeout(this.hide.bind(this), this.opts.timeout);
+        } catch (e) {
+          throw Error(e);
+        }
+      }
+    }.bind(this), 0);
+    return {
+      then: function (callback) {
+        if (typeof callback !== 'function') {
+          throw Error('Please specify the function');
+        }
+        this.callback = function (callback) {
+          var _this = this;
+          return function (idx) {
+            callback(idx);
+            _this.hide();
+          };
+        }.call(this, callback);
+      }.bind(this)
+    };
+  };
+
+  Hai.prototype.hide = function hide() {
+    if (this._timeoutId) {
+      clearTimeout(this._timeoutId);
+      this._timeoutId = null;
+    }
+
+    removeBtnHandler.call(this);
+
+    if (this.opts.scrollables) {
+      unlockScroll(this.opts.scrollables);
+    }
+
+    inactive(this._el);
+  };
+
+  function generateInnerHTML(caption, btnEls) {
+    return '<div class="hai__cover"></div>' + '<div class="hai__inner">' + '<div class="hai__header">' + '<span class="hai__caption">' + caption + '</span>' + '</div>' + '<div class="hai__body hai__btns--' + btnEls.length + '">' + '</div>' + '</div>';
+  }
+
+  function generateButtonEls(btns) {
+    var btnEls = [];
+    for (var i = 0, len = this.btns.length; i < len; i++) {
+      var a = document.createElement('a');
+      a.setAttribute('role', 'button');
+      a.className = 'hai__btn';
+      a.innerText = this.btns[i];
+      btnEls.push(a);
+    }
+    return btnEls;
+  }
+
+  function addBtnHandler() {
+    for (var i = 0, len = this.btns.length; i < len; i++) {
+      var handle = this.callback.bind(null, i);
+      this.btns[i].addEventListener('click', handle, false);
+      this._events.push(handle);
+    }
+  }
+
+  function removeBtnHandler() {
+    for (var i = 0, len = this.btns.length; i < len; i++) {
+      this.btns[i].removeEventListener('click', this._events[i], false);
+    }
+    this._events = [];
+  }
+
+  function insert(el) {
+    document.body.appendChild(el);
+  }
+
+  function calcScrollVal(els) {
+    var left = 0;
+    var top = 0;
+
+    for (var i = 0, len = els.length; i < len; i++) {
+      left += els[i].scrollLeft;
+      top += els[i].scrollTop;
+    }
+    return { left: left, top: top };
+  }
+
+  function insertBtn(parentEl, btnEls) {
+    var btnBody = parentEl.children[1].children[1];
+    for (var i = 0, len = btnEls.length; i < len; i++) {
+      btnBody.appendChild(btnEls[i]);
+    }
+  }
+
+  function move(el, left, top, scrollLeft, scrollTop) {
+    left -= WIDTH / 2;
+    left += scrollLeft;
+    top += scrollTop;
+
+    if (window.innerWidth < el.children[1].clientWidth + left) {
+      left = left - (el.children[1].clientWidth + left - window.innerWidth);
+    }
+    if (window.innerHeight < el.children[1].clientHeight + top) {
+      top = top - (el.children[1].clientHeight + top - window.innerHeight);
+    }
+
+    el.style.left = left + 'px';
+    el.style.top = top + 'px';
+  }
+
+  function active(el) {
+    var height = el.children[1].clientHeight;
+    el.style.height = height + 'px';
+    el.className += ' hai__box--active';
+  }
+
+  function inactive(el) {
+    el.style.height = 0;
+    el.className = 'hai__box';
+  }
+
+  function lockScroll(els) {
+    for (var i = 0, len = els.length; i < len; i++) {
+      els[i].style.overflow = 'hidden';
+    }
+  }
+
+  function unlockScroll(els) {
+    for (var i = 0, len = els.length; i < len; i++) {
+      els[i].style.overflow = null;
+    }
+  }
+
+  function injectStyle() {
+    var style = document.createElement('style');
+    var css = '.hai__box {' + 'position: absolute;' + 'overflow: hidden;' + 'min-width: ' + WIDTH + 'px;' + 'height: 0;' + '-webkit-transition: .2s linear height;' + 'transition: .2s linear height;' + '}' + '.hai__cover {' + 'position: fixed;' + 'left: 0;' + 'top: 0;' + '-webkit-transition: .2s linear;' + 'transition: .2s linear;' + '}' + '.hai__box--active .hai__cover {' + 'width: ' + window.innerWidth + 'px;' + 'height: ' + window.innerHeight + 'px;' + 'background: hsla(0, 0%, 0%, .3);' + '}' + '.hai__inner {' + 'position: relative;' + 'z-index: 99999;' + 'background: #e98b2a;' + '}' + '.hai__header {' + 'text-align: center;' + 'font-weight: bold;' + 'box-sizing: border-box;' + 'padding: .7em;' + '}' + '.hai__body {' + 'overflow: hidden;' + 'border-top: 1px solid hsla(0, 0%, 0%, .1);' + 'text-align: center;' + '}' + '.hai__btn {' + 'display: block;' + 'box-sizing: border-box;' + 'padding: .7em;' + 'cursor: pointer;' + 'background: #f0b16f;' + '-webkit-transition: .2s linear background;' + 'transition: .2s linear background;' + '}' + '.hai__btn:active {' + 'background: #f0bc6f;' + '}';
+    style.innerHTML = css;
+    document.head.appendChild(style);
+  }
+
+  return Hai;
+
+}));
