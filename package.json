@@ -5,10 +5,14 @@
   "main": "dist/hai.js",
   "jsnext:main": "es/hai.js",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c rollup.umd.config.js",
+    "minify": "uglifyjs dist/hai.js -o dist/hai.min.js -cm --comments all",
     "prestart": "npm run build",
     "start": "chokidar lib/hai.js -c 'npm run build'",
-    "prepublish": "uglifyjs hai.js -o hai.min.js --comments all"
+    "prepublish": "rollup -c rollup.es6.config.js",
+    "postpublish": "rm -rf es/",
+    "serve": "browser-sync start --server --port 3333",
+    "test": "xo && ava && nightwatch -t test/modules/*"
   },
   "repository": {
     "type": "git",
