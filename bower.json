@@ -1,0 +1,19 @@
+{
+  "name": "hai.js",
+  "main": "dist/hai.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/totora0155/hai.js",
+  "authors": [
+    "nju33"
+  ],
+  "description": "A dialog at hand in Vanilla",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
