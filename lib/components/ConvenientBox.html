@@ -1,0 +1,142 @@
+<div class="{{className.convenientBox}}">
+  <div class="{{className.convenientBoxInner}}">
+    {{#if stack.length}}
+      <div ref:parent class="{{className.convenientGroupWrapper}}">
+        {{#each stack as convenient}}
+          {{#if convenient.type === 'text'}}
+            <div class="{{className.convenientScroller}}">
+              {{convenient.text}}
+            </div>
+          {{else}}
+            {{#if convenient && convenient.items}}
+              <div class="{{className.convenientGroup}}">
+                <ul class="{{className.convenientList}}">
+                  {{#each convenient.items as item}}
+                    <li class="{{className.convenientItem}}">
+                      <a role="convenient"
+                         class="{{className.convenientBtn}} {{convenient.type}} {{hasButtons ? 'has-buttons' : 'has-not-buttons'}} {{selected.indexOf(item.value) > -1 ? className.convenientBtnActive : ''}}"
+                         on:click="handle(event, item, convenient.type)"
+                      >
+                        {{item.label || item.propName}}
+                      </a>
+                    </li>
+                  {{/each}}
+                </ul>
+              </div>
+            {{/if}}
+          {{/if}}
+        {{/each}}
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+<script>
+  import store from '../store';
+  import {stepTalk, answerTalk, doneTalk,
+          toggleConvenientItem} from '../action';
+  import className from '../class-name.json';
+
+  const DURATION = 200;
+
+  export default {
+    data() {
+      return {
+        className,
+        hasButtons: false,
+        stack: []
+      }
+    },
+
+    methods: {
+      waitDuringDuration() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+          }, DURATION);
+        });
+      },
+
+      /**
+       * Add item to the stack
+       */
+      push(convenient) {
+        const stack = this.get('stack');
+        stack.push(convenient);
+        this.set({stack});
+        requestAnimationFrame(() => {
+          if (stack.length > 1) {
+            const parent = this.refs.parent;
+            const elems = parent.children;
+            const oldStackHeight = elems[0].clientHeight;
+            const newStackHeight = elems[1].clientHeight;
+
+            // In SvelteJS, the elements do not change,
+            // only the contents are replaced,
+            // so the same element is targeted
+            //
+            // SvelteJSでは、要素自体が変わるんじゃなくて、
+            // 中身の要素だけが変わるようなので、
+            // 同じ要素を対象にスタイルを変える
+            //
+            // (e.g. opacity)
+
+            parent.style.height = `${oldStackHeight}px`;
+            elems[0].style.opacity = 0;
+
+            this.waitDuringDuration()
+            .then(() => {
+              stack.shift();
+              this.set({stack});
+
+              if (convenient.type === 'text' && oldStackHeight !== 0) {
+                parent.style.maxHeight = 'auto';
+              } else {
+                parent.style.height = `${newStackHeight}px`;
+                parent.style.maxHeight = '';
+              }
+              elems[0].style.opacity = 1;
+            });
+          }
+        });
+      },
+      handle(e, item, type) {
+        e.stopPropagation();
+        const name = this.get('name');
+        const callbacks = this.get('callbacks');
+        const end = this.get('end');
+        const fn = callbacks[`${name}:${item.propName}`]
+
+        if (typeof fn === 'function') {
+          const answer = fn.call(
+            item,
+            {
+              step(data = {}) {
+                const {answer, step} = data;
+                store.dispatch(answerTalk({
+                  [name]: answer || item.value
+                }));
+
+                store.dispatch(stepTalk(step))
+              },
+              done(data = {}) {
+                let {answers} = store.getState();
+                answers = Object.assign({}, answers, {
+                  [name]: data.answer || item.value
+                });
+                end(answers);
+
+                store.dispatch(doneTalk());
+              },
+              cancel() {
+                console.log('todo');
+              }
+            }
+          );
+        } else {
+          store.dispatch(toggleConvenientItem(item.value, type));
+        }
+      }
+    }
+  }
+</script>

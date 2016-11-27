@@ -1,0 +1,127 @@
+@import "variables";
+
+@icon-color: #656565;
+
+.menu-common() {
+  @icon-size: 1em;
+}
+
+.menuBox {
+  position: relative;
+  min-height: 1em;
+  padding: @v-gutter @h-gutter;
+  background: @bg-color;
+}
+
+.menu {
+  .menu-common;
+  min-height: @icon-size * 1.5;
+  display: table;
+}
+
+.leftBtnGroup {
+  display: table-cell;
+  width: 100%;
+  cursor: default;
+  user-select: none;
+}
+
+.menuBtn {
+  .menu-common;
+  display: inline-block;
+  position: relative;
+  width: @icon-size;
+  height: 100%;
+  transition: @duration @easing;
+  color: @icon-color;
+
+  &:not(.menuBtnDisable):hover {
+    color: @accent-color;
+  }
+}
+
+.menuBtnDisable {
+  color: @bg-color;
+}
+
+.rightBtnGroup {
+  display: table-cell;
+}
+
+.backBtn {
+  .menu-common;
+  color: inherit;
+  position: relative;
+  top: -4px;
+  display: inline-block;
+  width: @icon-size * .8;
+  height: 1px;
+  background-color: currentColor;
+
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    transform: translateY(50%) rotate(-135deg);
+    width: @icon-size * .5;
+    height: @icon-size * .5;
+    border-top: solid 1px currentColor;
+    border-right: solid 1px currentColor;
+  }
+}
+
+.prevBtn {
+  .menu-common;
+  color: inherit;
+  position: relative;
+  top: -4px;
+  display: inline-block;
+  width: @icon-size * .8;
+  height: 1px;
+  background-color: currentColor;
+
+  &:before {
+    content: '';
+    position: absolute;
+    bottom: 50%;
+    right: 0;
+    // right: .5px;
+    transform: translateY(50%) rotate(45deg);
+    width: @icon-size * .5;
+    height: @icon-size * .5;
+    border-top: solid 1px currentColor;
+    border-right: solid 1px currentColor;
+  }
+}
+
+.closeBtn {
+  .menu-common;
+  color: inherit;
+  position: relative;
+  top: 2px;
+  display: inline-block;
+  width: @icon-size;
+  height: @icon-size;
+  cursor: pointer;
+
+  &:before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    width: @icon-size;
+    height: 1px;
+    background-color: currentColor;
+    transform: rotate(-45deg);
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 10px;
+    width: @icon-size;
+    height: 1px;
+    background-color: currentColor;
+    transform: rotate(45deg);
+  }
+}

@@ -1,43 +1,58 @@
 {
-  "name": "hai.js",
-  "version": "0.1.0",
-  "description": "A dialog at hand in Vanilla",
-  "main": "dist/hai.js",
-  "jsnext:main": "es/hai.js",
+  "name": "hai",
+  "version": "0.0.0",
+  "description": "A small conversation library that happens at hand",
+  "main": "dist/hai.umd.js",
+  "jsnext:main": "dist/hai.es.js",
   "scripts": {
-    "build": "rollup -c rollup.umd.config.js",
-    "minify": "uglifyjs dist/hai.js -o dist/hai.min.js -cm --comments all",
-    "prestart": "npm run build",
-    "start": "chokidar lib/hai.js -c 'npm run build'",
-    "prepublish": "rollup -c rollup.es6.config.js",
-    "postpublish": "rm -rf es/",
-    "serve": "browser-sync start --server --port 3333",
-    "test": "xo && ava && nightwatch -t test/modules/*"
+    "start": "node dev-server.js",
+    "preprod": "node prod.js",
+    "prod": "babili dist/hai.js --no-comments --minified -o dist/hai.min.js",
+    "test": "xo && ava"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/totora0155/hai.js.git"
+    "url": "git+https://github.com/nju33/hai.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "ui",
+    "browser",
+    "commonjs",
+    "es",
+    "tooltip",
+    "prompt"
+  ],
+  "author": "nju33",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/totora0155/hai.js/issues"
+    "url": "https://github.com/nju33/hai/issues"
   },
-  "homepage": "https://github.com/totora0155/hai.js#readme",
+  "homepage": "https://github.com/nju33/hai#readme",
   "devDependencies": {
-    "ava": "^0.13.0",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "browser-sync": "^2.11.2",
-    "chokidar-cli": "^1.2.0",
-    "chromedriver": "^2.21.2",
-    "jsdom": "^8.3.0",
-    "nightwatch": "^0.8.18",
-    "rollup": "^0.25.6",
-    "rollup-plugin-babel": "^2.4.0",
-    "selenium-server-standalone-jar": "^2.53.0",
-    "uglify-js": "^2.6.2",
-    "xo": "^0.13.0"
+    "autoprefixer": "^6.5.3",
+    "ava": "^0.17.0",
+    "babel-eslint": "6",
+    "babel-plugin-external-helpers": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.19.0",
+    "babel-preset-env": "^0.0.9",
+    "babili": "^0.0.9",
+    "browser-sync": "^2.18.2",
+    "cssnano": "^3.8.1",
+    "gulp": "^3.9.1",
+    "gulp-less": "^3.3.0",
+    "gulp-postcss": "^6.2.0",
+    "nightmare": "^2.8.1",
+    "postcss-easings": "^0.3.0",
+    "postcss-modules": "^0.5.2",
+    "rollup": "^0.36.4",
+    "rollup-plugin-babel": "^2.6.1",
+    "rollup-plugin-json": "^2.0.2",
+    "rollup-plugin-node-resolve": "^2.0.0",
+    "rollup-plugin-replace": "^1.1.1",
+    "rollup-plugin-string": "^2.0.2",
+    "rollup-plugin-svelte": "^1.0.0",
+    "uglify-js": "^2.7.4",
+    "xo": "^0.17.1"
   },
   "ava": {
     "files": [
@@ -53,6 +68,17 @@
     "space": 2,
     "ignores": [
       "es/**"
+    ],
+    "parser": "babel-eslint",
+    "overrides": [
+      {
+        "files": "test/fixtures/*js",
+        "esnext": false,
+        "globals": ["Hai"]
+      }
     ]
+  },
+  "dependencies": {
+    "redux": "^3.6.0"
   }
 }

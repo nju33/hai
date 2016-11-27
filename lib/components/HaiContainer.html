@@ -1,0 +1,118 @@
+<div ref:cover class="{{className.cover}}"
+     on:click="close()">
+  <div ref:box class="{{className.box}}"
+    　　on:click="cancelEvent(event)"
+  ></div>
+</div>
+
+<script>
+  import className from '../class-name.json';
+  import store from '../store';
+  import {resetTalks} from '../action';
+  import {requestAnimationFrame} from '../helpers';
+
+  const DURATION = 200;
+  const BITE = 20;
+  let visibility = 'hidden';
+
+  export default {
+    data() {
+      return {
+        className,
+      }
+    },
+
+    onrender() {
+    },
+
+    methods: {
+      cancelEvent(e) {
+        e.stopPropagation();
+      },
+      close() {
+        store.dispatch(resetTalks());
+      },
+      appendComponent(elem) {
+        this.refs.box.appendChild(elem);
+      },
+      isVisible() {
+        return visibility === 'visible';
+      },
+      toBlockElements() {
+        this.refs.cover.style.display = 'block';
+        this.refs.box.style.display = 'block';
+      },
+      toNoneElements() {
+        this.refs.cover.style.display = 'none';
+        this.refs.box.style.display = 'none';
+      },
+      setPosition({width, height, top, right, bottom, left}) {
+        const boxHeight = this.refs.box.clientHeight;
+        const boxWidth = this.refs.box.clientWidth;
+        const requiredVirticalArea = top + boxHeight;
+        const requiredHorizontalArea = left + boxWidth;
+        let virticalOverAmount = 0;
+        let horizontalOverAmount = 0;
+
+        if (requiredVirticalArea > window.innerHeight) {
+          virticalOverAmount = requiredVirticalArea - window.innerHeight;
+        }
+
+        if (requiredHorizontalArea > window.innerWidth) {
+          horizontalOverAmount = requiredHorizontalArea - window.innerWidth;
+        }
+
+        if (window.innerHeight - requiredVirticalArea > BITE) {
+          this.refs.box.style.top = `${top - virticalOverAmount - BITE}px`;
+        } else {
+          this.refs.box.style.top = `${top - virticalOverAmount}px`;
+        }
+
+        if (window.innerWidth - requiredHorizontalArea > BITE) {
+          this.refs.box.style.left = `${left - horizontalOverAmount - BITE}px`;
+        } else {
+          this.refs.box.style.left = `${left - horizontalOverAmount}px`;
+        }
+      },
+      fadeIn() {
+        this.refs.cover.classList.add(className.fadeIn);
+        this.refs.box.classList.add(className.fadeIn);
+      },
+      fadeOut() {
+        this.refs.cover.classList.remove(className.fadeIn);
+        this.refs.box.classList.remove(className.fadeIn);
+      },
+      waitDuringDuration() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve();
+          }, DURATION);
+        });
+      },
+      show(bound) {
+        return new Promise(resolve => {
+          this.toBlockElements();
+          this.setPosition(bound);
+          requestAnimationFrame(() => {
+            this.fadeIn();
+            this.waitDuringDuration().then(() => {
+              visibility = 'visible';
+              resolve();
+            });
+          });
+        });
+      },
+      hide() {
+        return new Promise(resolve => {
+          this.fadeOut();
+          this.waitDuringDuration()
+          .then(() => {
+            this.toNoneElements();
+            visibility = 'hidden';
+            resolve();
+          });
+        });
+      }
+    }
+  }
+</script>
