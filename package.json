@@ -1,6 +1,6 @@
 {
   "name": "@nju33/hai",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A small conversation library that happens at hand",
   "main": "dist/hai.umd.js",
   "jsnext:main": "dist/hai.es.js",
