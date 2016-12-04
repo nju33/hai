@@ -41,9 +41,9 @@ Then, download the latest version.
 
 ```js
 // es
-import Hai from 'hai';
+import Hai from '@nju33/hai';
 // common
-const Hai = require('hai');
+const Hai = require('@nju33/hai');
 ```
 
 ### Browser
