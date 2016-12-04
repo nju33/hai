@@ -6,6 +6,7 @@
   "jsnext:main": "dist/hai.es.js",
   "scripts": {
     "start": "node dev-server.js",
+    "prepublish": "yarn prod",
     "preprod": "mkdir -p dist; NODE_ENV='production' node prod.js",
     "prod": "babili dist/hai.js --no-comments --minified -o dist/hai.min.js",
     "_test": "xo && ava",
