@@ -1,5 +1,9 @@
 # Hai
 
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+
+[![Build Status](https://travis-ci.org/nju33/hai.svg?branch=master)](https://travis-ci.org/nju33/hai)
+
 A small conversation library that happens at hand
 
 ## Install, or Download
@@ -103,6 +107,7 @@ TODO...
 
 ## TODO?
 
+- [ ] Implement history (`back` `prev`)
 - [ ] Refactoring (To eliminate waste)
 - [ ] Add user customization options
 - [ ] Writing tests

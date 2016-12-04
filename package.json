@@ -8,7 +8,8 @@
     "start": "node dev-server.js",
     "preprod": "mkdir -p dist; NODE_ENV='production' node prod.js",
     "prod": "babili dist/hai.js --no-comments --minified -o dist/hai.min.js",
-    "test": "xo && ava"
+    "_test": "xo && ava",
+    "test": "xo"
   },
   "repository": {
     "type": "git",
