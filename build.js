@@ -34,7 +34,7 @@ exports.bundleAll = () => {
       .on('end', () => {
         bundle()
           .then(() => resolve())
-          .catch(() => reject());
+          .catch(err => reject(err));
       });
   });
 };
@@ -59,7 +59,7 @@ function bundle() {
             try {
               fs.writeFileSync(destPath, bundle.generate(opts).code);
             } catch (err) {
-              reject();
+              reject(err);
             }
             break;
           }
@@ -73,7 +73,7 @@ function bundle() {
             try {
               fs.writeFileSync(destPath, bundle.generate(opts).code);
             } catch (err) {
-              reject();
+              reject(err);
             }
             break;
           }
@@ -84,7 +84,7 @@ function bundle() {
             try {
               fs.writeFileSync(destPath, bundle.generate(opts).code);
             } catch (err) {
-              reject();
+              reject(err);
             }
             break;
           }

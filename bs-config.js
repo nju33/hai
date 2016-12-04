@@ -16,7 +16,7 @@ module.exports = {
         if (first) {
           return;
         }
-        bundle();
+        bundle().catch(err => console.log(err));
       }
     },
     {
@@ -25,7 +25,7 @@ module.exports = {
         if (first) {
           return;
         }
-        bundleAll();
+        bundleAll().catch(err => console.log(err));
       }
     }
   ],
@@ -40,7 +40,9 @@ module.exports = {
   injectChanges: true
 };
 
-bundleAll().then(() => {
+bundleAll()
+.then(() => {
   first = false;
   return;
-});
+})
+.catch(err => console.log(err));
