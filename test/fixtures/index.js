@@ -8,7 +8,7 @@
         message: 'Do you want something to eat?',
         buttons: [
           Hai.button.cancel('No'),
-          Hai.button.step('Yes')
+          Hai.button.step('question', 'Yes', 'yes')
         ]
       }),
       new Hai({
