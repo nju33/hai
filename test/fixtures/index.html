@@ -2,77 +2,20 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>HaiJS</title>
+  <title>Hai</title>
   <link rel="stylesheet" href="index.css">
 </head>
-<body style="height:200vh">
+<body>
+
+  <div id="test"></div>
 
   <div class="wrapper">
-    <a role="button" id="b1" class="hai">Button</a>
-    <a role="button" id="b2" class="hai">Button</a>
+
+    <a role="button" id="food" class="hai">Food</a>
+    <a role="button" id="agreement" class="hai">Agreement</a>
     <a role="button" id="b3" class="hai">Button</a>
 
-    <div style="position:relative;top:1em;">
-      <a role="button" id="b4" class="hai">Button</a>
-    </div>
-    <div style="position:fixed;bottom:1em;right:1em;">
-      <a role="button" id="b5" class="hai">Button</a>
-    </div>
-  </div>
-
-  <script src="../../dist/hai.min.js"></script>
-<script>
-var hai1 = new Hai('Good?', 'yes', {timeout: 3000, coverEvent: false});
-var hai2 = new Hai('Fish or Meat?', 'Fish', 'Meat');
-var hai3 = new Hai('What to eat?', 'Beef', 'Poke' ,'Chicken');
-
-document.getElementById('b1').addEventListener('click', function(e) {
-  e.preventDefault();
-  var a = hai1.show(e).then(function() {
-    alert('yes');
-  });
-});
-document.getElementById('b2').addEventListener('click', function(e) {
-  e.preventDefault();
-  hai2.show(e).then(function(btnId) {
-    switch (btnId) {
-      case 0:
-        alert('Fish');
-        break;
-      case 1:
-        alert('Meat');
-        break;
-    }
-  });
-});
-document.getElementById('b3').addEventListener('click', function(e) {
-  e.preventDefault();
-  hai3.show(e).then(function(btnId) {
-    switch (btnId) {
-      case 0:
-        alert('Beef');
-        break;
-      case 1:
-        alert('Poke');
-        break;
-      case 2:
-        alert('Chicken');
-        break;
-    }
-  });
-});
-document.getElementById('b4').addEventListener('click', function(e) {
-  e.preventDefault();
-  var a = hai1.show(e).then(function() {
-    alert('Duplicated');
-  });
-});
-document.getElementById('b5').addEventListener('click', function(e) {
-  e.preventDefault();
-  var a = hai1.show(e).then(function() {
-    alert('adjust');
-  });
-});
-</script>
+  <script src="/scripts/hai.js"></script>
+  <script src="/index.js"></script>
 </body>
 </html>

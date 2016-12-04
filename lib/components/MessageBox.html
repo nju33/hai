@@ -1,0 +1,47 @@
+<div ref:box class="{{className.messageBox}}">
+  <div ref:inner class="{{className.messageBoxInner}}">
+    {{message}}
+  </div>
+</div>
+
+<script>
+  import className from '../class-name.json';
+  import {requestAnimationFrame} from '../helpers';
+
+  export default {
+    data() {
+      return {
+        className
+      };
+    },
+
+    onrender() {
+      this.observe('message', () => {
+        requestAnimationFrame(() => {
+          this.refs.box.style.height = this.refs.inner.clientHeight + 'px';
+        });
+      });
+    },
+
+    methods: {
+      setMessage() {
+      }
+      // getHeight() {
+      //   return this.refs.box.clientHeight;
+      // },
+      // justActivate() {
+      //   this.refs.box.classList.add(className.messageActive);
+      //   this.refs.box.classList.add(className.nonAnimation);
+      //   requestANimationFrame(() => {
+      //     this.refs.box.classList.remove(className.nonAnimation);
+      //   });
+      // },
+      // activate() {
+      //   this.refs.box.classList.add(className.messageActive);
+      // },
+      // deactivate() {
+      //   this.refs.box.classList.add(className.messageDeactive);
+      // }
+    }
+  }
+</script>

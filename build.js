@@ -1,0 +1,97 @@
+const fs = require('fs');
+const path = require('path');
+const gulp = require('gulp');
+const less = require('gulp-less');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+const easings = require('postcss-easings');
+const modules = require('postcss-modules');
+const {rollup} = require('rollup');
+const rollupConfig = require('./rollup.config');
+
+const MODULE_NAME = 'Hai';
+const globals = {};
+
+exports.bundleAll = () => {
+  return new Promise((resolve, reject) => {
+    gulp.src('src/styles/style.less')
+      .pipe(less())
+      .pipe(postcss([
+        autoprefixer({
+          browsers: 'last 2 versions'
+        }),
+        easings,
+        modules({
+          getJSON(cssFileName, json) {
+            // const baseName = path.basename(cssFileName) + '.json';
+            const baseName = 'class-name.json';
+            const jsonFileName = path.join(__dirname, 'lib', baseName);
+            fs.writeFileSync(jsonFileName, JSON.stringify(json));
+          }
+        })
+      ]))
+      .pipe(gulp.dest('lib/'))
+      .on('end', () => {
+        bundle()
+          .then(() => resolve())
+          .catch(() => reject());
+      });
+  });
+};
+
+exports.bundle = bundle;
+
+function bundle() {
+  return new Promise((resolve, reject) => {
+    rollup(rollupConfig)
+    .then(bundle => {
+      rollupConfig.cache = bundle;
+
+      ['iife', 'es', 'umd'].forEach(format => {
+        switch (format) {
+          case 'iife': {
+            const opts = {
+              moduleName: MODULE_NAME,
+              globals,
+              format
+            };
+            const destPath = './dist/hai.js';
+            try {
+              fs.writeFileSync(destPath, bundle.generate(opts).code);
+            } catch (err) {
+              reject();
+            }
+            break;
+          }
+          case 'umd': {
+            const opts = {
+              moduleName: MODULE_NAME,
+              globals,
+              format
+            };
+            const destPath = './dist/hai.umd.js';
+            try {
+              fs.writeFileSync(destPath, bundle.generate(opts).code);
+            } catch (err) {
+              reject();
+            }
+            break;
+          }
+          case 'es':
+          default: {
+            const opts = {globals, format};
+            const destPath = './dist/hai.es.js';
+            try {
+              fs.writeFileSync(destPath, bundle.generate(opts).code);
+            } catch (err) {
+              reject();
+            }
+            break;
+          }
+        }
+      });
+
+      resolve();
+    });
+  });
+}

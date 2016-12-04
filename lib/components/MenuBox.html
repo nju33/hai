@@ -1,0 +1,45 @@
+<div class="{{className.menuBox}}">
+  <div class="{{className.menu}}">
+    <div class="{{className.leftBtnGroup}}">
+      <a role="button" class="{{className.menuBtn}} {{className.menuBtnDisable}}">
+        <span on:click="back()" class="{{className.backBtn}}"></span>
+      </a>
+      <a role="button" class="{{className.menuBtn}} {{className.menuBtnDisable}}">
+        <span on:click="prev()" class="{{className.prevBtn}}"></span>
+      </a>
+    </div>
+    <div class="{{className.rightBtnGroup}}">
+      <a role="button" class="{{className.menuBtn}}">
+        <span on:click="close()" class="{{className.closeBtn}}"></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  import store from '../store';
+  import {resetTalks} from '../action';
+  // import {BACK, PREV, RESET} from '../action';
+  import className  from '../class-name.json';
+
+  export default {
+    data() {
+      return {
+        className,
+        message: ''
+      };
+    },
+
+    methods: {
+      back() {
+        store.dispatch(BACK);
+      },
+      prev() {
+        store.dispatch(PREV);
+      },
+      close() {
+        store.dispatch(resetTalks());
+      }
+    }
+  }
+</script>

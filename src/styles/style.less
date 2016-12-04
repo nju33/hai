@@ -1,0 +1,217 @@
+@import "variables";
+@import "menu";
+
+.cover {
+  display: none;
+  opacity: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999999;
+  width: 100vw;
+  height: 100vh;
+  transition: .2s easeInOutQuart;
+  font-size: .89em;
+}
+
+.box {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  max-width: 13em;
+  background: #333;
+  transition:
+    opacity .2s easeInOutQuart,
+    left .2s easeInOutQuart,
+    top .2s easeInOutQuart;
+  user-select: none;
+}
+
+@media (max-width: 415px) {
+  .box {
+    left: 0 !important;
+    width: calc(~'100vw - 2em');
+    max-width: none;
+    margin: 0 1em;
+  }
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+.messageBox {
+  color: @text-color;
+  background: @bg-color;
+  padding: @v-gutter @h-gutter;
+  transition: @duration @easing;
+}
+
+.messageBoxInner {
+}
+
+.convenientBox {
+  color: @text-color;
+  background: @bg-color;
+}
+
+.convenientGroupWrapper {
+  overflow: hidden;
+  transition: @duration @easing;
+  font-size: .85em;
+}
+
+.convenientGroup {
+  opacity: 0;
+  transition: @duration @easing;
+}
+
+.convenientBoxInner {
+
+}
+
+.convenientList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.convenientScroller {
+  overflow: auto;
+  max-height: 13em;
+  padding: .5em .75em;
+  margin: .5em .75em;
+  background: #434343;
+}
+
+.convenientBtn {
+  position: relative;
+  display: block;
+  padding: @v-gutter @h-gutter;
+  transition:
+    opacity @duration @easing,
+    background @duration @easing;
+  user-select: none;
+  cursor: pointer;
+
+  &:global(.has-not-buttons):hover {
+    background: @accent-color;
+  }
+
+  &:global(.has-buttons):global(.checkbox),
+  &:global(.has-buttons):global(.radio) {
+    padding-left: 2em;
+    margin-left: 1em;
+  }
+
+  &:global(.has-buttons):global(.checkbox):before {
+    content: "";
+    color: inherit;
+    position: absolute;
+    left: 0;
+    bottom: 50%;
+    transform: translateY(50%);
+    width: .5em;
+    height: .2em;
+    border-bottom: solid 2px currentColor;
+    border-left: solid 2px currentColor;
+    transform: rotate(-45deg);
+    transition: @duration @easing;
+  }
+
+  &:global(.has-buttons):global(.radio):before {
+    content: "";
+    position: absolute;
+    left: .5em;
+    bottom: 50%;
+    transform: translateY(50%);
+    color: inherit;
+    width: .5em;
+    height: 2px;
+    border: 1px solid currentColor;
+    box-sizing: border-box;
+    transition: @duration @easing;
+  }
+}
+
+.convenientBtn {
+}
+
+:root .convenientBtnActive {
+  &:global(.has-buttons):global(.checkbox):before {
+    width: .7em;
+    height: .3em;
+    color: @accent-color;
+  }
+
+  &:global(.has-buttons):global(.radio):before {
+    height: .5em;
+    color: @accent-color;
+    background: currentColor;
+    border-color: currentColor;
+  }
+
+  &:global(.has-not-buttons) {
+    background: @accent-color;
+  }
+}
+
+.buttonBox {
+  color: @text-color;
+  background: @bg-color;
+}
+
+.buttonBoxInner {
+
+}
+
+.buttonGroupWrapper {
+  overflow: hidden;
+  transition: @duration @easing;
+}
+
+.buttonGroup {
+  transform: translate3d(100%,0,0);
+  transition: @duration @easing;
+}
+
+.buttonGroupActive {
+  transform: translate3d(0,0,0);
+}
+
+.buttonGroupDeactive {
+  opacity: 0;
+  margin-top: -100%;
+  // height: 0;
+}
+
+.buttonList {
+  display: table;
+  text-align: center;
+  width: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.buttonItem {
+  display: table-cell;
+}
+
+.buttonBtn {
+  display: block;
+  padding: @v-gutter @h-gutter;
+  color: @text-color;
+  transition: .2s easeInOutQuart;
+  user-select: none;
+  cursor: pointer;
+
+  &:not(.buttonBtnDisabled):hover {
+    background: @accent-color;
+  }
+}
+
+.buttonBtnDisabled {
+  cursor: default;
+  color: lighten(@bg-color, 30%);
+}
