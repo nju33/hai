@@ -13,13 +13,13 @@ A small conversation library that happens at hand
 ### npm
 
 ```sh
-$ npm i -S hai
+$ npm i -S @nju33/hai
 ```
 
 ### yarn
 
 ```sh
-$ yarn add hai
+$ yarn add @nju33/hai
 ```
 
 ### bower
