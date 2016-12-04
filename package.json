@@ -1,6 +1,6 @@
 {
   "name": "hai",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A small conversation library that happens at hand",
   "main": "dist/hai.umd.js",
   "jsnext:main": "dist/hai.es.js",
@@ -76,7 +76,9 @@
       {
         "files": "test/fixtures/*js",
         "esnext": false,
-        "globals": ["Hai"]
+        "globals": [
+          "Hai"
+        ]
       }
     ]
   },
