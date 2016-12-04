@@ -6,6 +6,8 @@
 
 A small conversation library that happens at hand
 
+<img src="https://github.com/nju33/hai/raw/master/screenshot.gif?raw=true" alt="Hai" width="300">
+
 ## Install, or Download
 
 ### npm
