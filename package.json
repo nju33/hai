@@ -1,5 +1,5 @@
 {
-  "name": "hai",
+  "name": "@nju33/hai",
   "version": "0.0.1",
   "description": "A small conversation library that happens at hand",
   "main": "dist/hai.umd.js",
@@ -30,6 +30,9 @@
     "url": "https://github.com/nju33/hai/issues"
   },
   "homepage": "https://github.com/nju33/hai#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
     "autoprefixer": "^6.5.3",
     "ava": "^0.17.0",
