@@ -17,6 +17,10 @@
 
     onrender() {
       this.observe('message', () => {
+        if (!this.get('message')) {
+          return;
+        }
+
         requestAnimationFrame(() => {
           this.refs.box.style.height = this.refs.inner.clientHeight + 'px';
         });
@@ -24,24 +28,6 @@
     },
 
     methods: {
-      setMessage() {
-      }
-      // getHeight() {
-      //   return this.refs.box.clientHeight;
-      // },
-      // justActivate() {
-      //   this.refs.box.classList.add(className.messageActive);
-      //   this.refs.box.classList.add(className.nonAnimation);
-      //   requestANimationFrame(() => {
-      //     this.refs.box.classList.remove(className.nonAnimation);
-      //   });
-      // },
-      // activate() {
-      //   this.refs.box.classList.add(className.messageActive);
-      // },
-      // deactivate() {
-      //   this.refs.box.classList.add(className.messageDeactive);
-      // }
     }
   }
 </script>

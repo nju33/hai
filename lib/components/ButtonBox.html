@@ -1,22 +1,18 @@
-<div class="{{className.buttonBox}}">
-  <div class="{{className.buttonBoxInner}}">
-    {{#if stack.length}}
-      <div ref:parent class="{{className.buttonGroupWrapper}}">
-        {{#each stack as buttons, idx}}
-          <div class="{{className.buttonGroup}} {{idx === 0 ? className.buttonGroupActive : ''}}">
-            <ul class="{{className.buttonList}}">
-              {{#each buttons as button}}
-                <li class="{{className.buttonItem}}">
-                  <a role="button" class="{{className.buttonBtn}} {{validBtn ? '' : className.buttonBtnDisabled}}"
-                     on:click="handle(event, button)"
-                  >
-                    {{button.label || button.propName}}
-                  </a>
-                </li>
-              {{/each}}
-            </ul>
-          </div>
-        {{/each}}
+<div ref:box class="{{className.buttonBox}}">
+  <div ref:inner class="{{className.buttonBoxInner}}">
+    {{#if button && button.items.length > 0}}
+      <div class="{{className.buttonGroup}}">
+        <ul class="{{className.buttonList}} {{button.direction}}">
+          {{#each button.items as item}}
+            <li class="{{className.buttonItem}} {{button.direction}}">
+              <a role="button" class="{{className.buttonBtn}} {{valid ? '' : className.buttonBtnDisabled}}"
+                 on:click="handle(event, item)"
+              >
+                {{item[0]}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
       </div>
     {{/if}}
   </div>
@@ -24,163 +20,159 @@
 
 <script>
   import store from '../store';
-  import {stepTalk, answerTalk, doneTalk} from '../action';
+  import {answerTalk, doneTalk} from '../action';
   import className from '../class-name.json';
-  import {requestAnimationFrame} from '../helpers';
-
-  const DURATION = 200;
+  import {requestAnimationFrame, next} from '../helpers';
 
   export default {
     data() {
       return {
-        className,
-        convenientType: null,
-        stack: [],
-        selected: [],
+        className
       };
     },
-    computed: {
-      validBtn: (convenientType, selected) => {
-        if (isRelevantType(convenientType)) {
-          return selected.length > 0;
-        } else {
-          return true;
+
+    onrender() {
+      this.observe('button', button => {
+        if (!this.get('button')) {
+          return;
         }
 
-        function isRelevantType(type) {
-          return ['radio', 'checkbox'].indexOf(type) > -1;
-        }
-      }
-    },
-    methods: {
-      waitDuringDuration() {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, DURATION);
-        });
-      },
-
-      /**
-       * Add item to the stack
-       */
-      push(buttons) {
-        const stack = this.get('stack');
-        stack.push(buttons);
-        this.set({stack});
+        const {helpers} = this.get();
+        const {waitDuringDuration} = helpers;
 
         requestAnimationFrame(() => {
-          if (stack.length > 1) {
-            const parent = this.refs.parent;
-            const elems = parent.children;
-            const oldStackHeight = elems[0].clientHeight;
-            const newStackHeight = elems[1].clientHeight;
-
-            // In SvelteJS, the elements do not change,
-            // only the contents are replaced,
-            // so the same element is targeted
-            //
-            // SvelteJSでは、要素自体が変わるんじゃなくて、
-            // 中身の要素だけが変わるようなので、
-            // 同じ要素を対象にスタイルを変える
-            //
-            // (e.g. opacity)
-
-            parent.style.height = `${oldStackHeight}px`;
-            elems[0].style.opacity = 0;
-
-            this.waitDuringDuration()
-            .then(() => {
-              stack.shift();
-              this.set({stack});
-
-              parent.style.height = `${newStackHeight}px`;
-              elems[0].style.opacity = 1;
-            });
-          }
+          this.refs.inner.style.opacity = 0;
+          this.refs.box.style.height = this.refs.inner.clientHeight + 'px';
         });
+
+        waitDuringDuration().then(() => {
+          this.refs.inner.style.opacity = 1;
+        });
+      });
+
+      this.observe('value', value => {
+        const {convenient} = this.get();
+
+        if (!convenient) {
+          this.set({valid: true});
+          return ;
+        }
+
+        if (['input', 'radio', 'checkbox'].indexOf(convenient.type) === -1) {
+          return this.set({valid: true});
+        } else if (convenient.type === 'input' && value) {
+          this.set({valid: true});
+        } else if (convenient.type === 'input' && !value) {
+          this.set({valid: false});
+        } else if (convenient.type === 'radio' && value) {
+          this.set({valid: true});
+        } else if (convenient.type === 'radio' && !value) {
+          this.set({valid: false});
+        } else if (convenient.type === 'checkbox' &&
+                   (value || []).length > 0) {
+          this.set({valid: true});
+        } else if (convenient.type === 'checkbox' &&
+                   (value || []).length === 0) {
+          this.set({valid: false});
+        }
+      });
+    },
+
+    methods: {
+      reset() {
+        this.refs.box.style.height = '';
       },
       handle(e, button) {
         e.stopPropagation();
 
-        if (!this.get('validBtn')) {
+        if (!this.get('valid')) {
           return;
         }
 
-        const {__event, selected} = store.getState();
-        const convenientType = this.get('convenientType');
-        const name = this.get('name');
-        const callbacks = this.get('callbacks');
-        const end = this.get('end');
-        const fn = button.callback || callbacks[`${name}:${button.propName}`];
+        // const {__event, selected} = store.getState();
+        // const convenientType = this.get('convenientType');
+        // const name = this.get('name');
+        // const callbacks = this.get('callbacks');
+        // const end = this.get('end');
+        const convenient = this.get('convenient');
+        const [label, callback, including] = button;
 
-        if (typeof fn === 'function') {
-          const obj = (() => {
-            if (['radio', 'checkbox'].indexOf(convenientType) > -1) {
-              return Object.assign({}, button, {selected});
-            } else {
-              return Object.assign({}, button);
-            }
-          })();
-
-          fn.call(
-            obj,
-            {
-              step(data = {}) {
-                const {answer, count} = data;
-                if (answer !== false) {
-                  if (selected.length > 0) {
-                    store.dispatch(answerTalk({
-                      [name]: selected
-                    }));
-                  } else if (button.callback) {
-                    if (typeof button.callback !== 'function') {
-                      throw new Error('`button.callback` must be a function');
-                    }
-                    button.callback();
-                  } else if (answer || button.value) {
-                    store.dispatch(answerTalk({
-                      [name]: answer || button.value
-                    }));
-                  }
-                }
-
-                store.dispatch(stepTalk(count))
-              },
-              done(data = {}) {
-                let {answers} = store.getState();
-                const {answer} = data;
-                if (answer !== false) {
-                  if (selected.length > 0) {
-                    answers = Object.assign({}, answers, {
-                      [name]: selected
-                    });
-                  } else {
-                    answers = Object.assign({}, answers, {
-                      [name]: answer || button.value
-                    });
-                  }
-                }
-
-                const {end} = __event;
-                if (typeof end === 'function') {
-                  end(answers);
-                }
-
-                store.dispatch(doneTalk());
-              },
-              cancel() {
-                const {cancel} = __event;
-                if (typeof cancel === 'function') {
-                  cancel();
-                }
-                store.dispatch(doneTalk());
-              }
-            }
-          );
-        } else {
-          store.dispatch(stepTalk(1));
+        if (!convenient || convenient.type === 'text' && including) {
+          store.dispatch(answerTalk({
+            name: this.get('name'),
+            answer: label
+          }));
         }
+
+        callback.call(this.get(), next, store.getState().names);
+
+        // if (typeof fn === 'function') {
+        //   const obj = (() => {
+        //     if (['radio', 'checkbox'].indexOf(convenientType) > -1) {
+        //       return Object.assign({}, button, {selected});
+        //     } else {
+        //       return Object.assign({}, button);
+        //     }
+        //   })();
+
+          // fn.call(
+          //   obj,
+          //   {
+          //     step(data = {}) {
+          //       const {answer, count} = data;
+          //       if (answer !== false) {
+          //         if (selected.length > 0) {
+          //           store.dispatch(answerTalk({
+          //             [name]: selected
+          //           }));
+          //         } else if (button.callback) {
+          //           if (typeof button.callback !== 'function') {
+          //             throw new Error('`button.callback` must be a function');
+          //           }
+          //           button.callback();
+          //         } else if (answer || button.value) {
+          //           store.dispatch(answerTalk({
+          //             [name]: answer || button.value
+          //           }));
+          //         }
+          //       }
+          //
+          //       store.dispatch(stepTalk(count))
+          //     },
+          //     done(data = {}) {
+          //       let {answers} = store.getState();
+          //       const {answer} = data;
+          //       if (answer !== false) {
+          //         if (selected.length > 0) {
+          //           answers = Object.assign({}, answers, {
+          //             [name]: selected
+          //           });
+          //         } else {
+          //           answers = Object.assign({}, answers, {
+          //             [name]: answer || button.value
+          //           });
+          //         }
+          //       }
+          //
+          //       const {end} = __event;
+          //       if (typeof end === 'function') {
+          //         end(answers);
+          //       }
+          //
+          //       store.dispatch(doneTalk());
+          //     },
+          //     cancel() {
+          //       const {cancel} = __event;
+          //       if (typeof cancel === 'function') {
+          //         cancel();
+          //       }
+          //       store.dispatch(doneTalk());
+          //     }
+          //   }
+          // );
+        // } else {
+        //   store.dispatch(stepTalk(1));
+        // }
       }
     }
   }

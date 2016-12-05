@@ -1,31 +1,32 @@
-<div class="{{className.convenientBox}}">
-  <div class="{{className.convenientBoxInner}}">
-    {{#if stack.length}}
-      <div ref:parent class="{{className.convenientGroupWrapper}}">
-        {{#each stack as convenient}}
-          {{#if convenient.type === 'text'}}
-            <div class="{{className.convenientScroller}}">
-              {{convenient.text}}
+<div ref:box class="{{className.convenientBox}}">
+  <div ref:inner class="{{className.convenientBoxInner}}">
+    {{#if convenient}}
+      <div class="{{className.convenientContent}}">
+        {{#if convenient.type === 'text'}}
+          <div class="{{className.convenientScroller}}">
+            {{convenient.text}}
+          </div>
+        {{elseif convenient.type === 'input'}}
+          <input class="{{className.convenientInput}}" type="text"
+                 on:keyup="handleInput(event, name, convenient.type)">
+        {{else}}
+          {{#if convenient && convenient.items}}
+            <div class="{{className.convenientGroup}}">
+              <ul class="{{className.convenientList}}">
+                {{#each convenient.items as item}}
+                  <li class="{{className.convenientItem}}">
+                    <a role="convenient"
+                       class="{{className.convenientBtn}} {{convenient.type}} {{hasButton ? 'has-buttons' : 'has-not-buttons'}} {{selected(value, item[1], convenient.type)}}"
+                       on:click="handle(event, name, convenient.type, item)"
+                    >
+                      {{item[0]}}
+                    </a>
+                  </li>
+                {{/each}}
+              </ul>
             </div>
-          {{else}}
-            {{#if convenient && convenient.items}}
-              <div class="{{className.convenientGroup}}">
-                <ul class="{{className.convenientList}}">
-                  {{#each convenient.items as item}}
-                    <li class="{{className.convenientItem}}">
-                      <a role="convenient"
-                         class="{{className.convenientBtn}} {{convenient.type}} {{hasButtons ? 'has-buttons' : 'has-not-buttons'}} {{selected.indexOf(item.value) > -1 ? className.convenientBtnActive : ''}}"
-                         on:click="handle(event, item, convenient.type)"
-                      >
-                        {{item.label || item.propName}}
-                      </a>
-                    </li>
-                  {{/each}}
-                </ul>
-              </div>
-            {{/if}}
           {{/if}}
-        {{/each}}
+        {{/if}}
       </div>
     {{/if}}
   </div>
@@ -33,109 +34,141 @@
 
 <script>
   import store from '../store';
-  import {stepTalk, answerTalk, doneTalk,
+  // import {stepTalk, answerTalk, doneTalk,
+  //         toggleConvenientItem} from '../action';
+  import {answerTalk, doneTalk,
           toggleConvenientItem} from '../action';
   import className from '../class-name.json';
 
-  const DURATION = 200;
-
   export default {
-    data() {
-      return {
-        className,
-        hasButtons: false,
-        stack: []
+    helpers: {
+      selected(value, item, type) {
+        if (!value) {
+          return '';
+        }
+
+        if (type === 'radio') {
+          return value === item ? className.convenientBtnActive : '';
+        } else if (type === 'checkbox') {
+          return value.indexOf(item) > -1 ? className.convenientBtnActive : '';
+        }
       }
     },
 
-    methods: {
-      waitDuringDuration() {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, DURATION);
-        });
-      },
+    data() {
+      return {
+        className
+      }
+    },
 
-      /**
-       * Add item to the stack
-       */
-      push(convenient) {
-        const stack = this.get('stack');
-        stack.push(convenient);
-        this.set({stack});
-        requestAnimationFrame(() => {
-          if (stack.length > 1) {
-            const parent = this.refs.parent;
-            const elems = parent.children;
-            const oldStackHeight = elems[0].clientHeight;
-            const newStackHeight = elems[1].clientHeight;
-
-            // In SvelteJS, the elements do not change,
-            // only the contents are replaced,
-            // so the same element is targeted
-            //
-            // SvelteJSでは、要素自体が変わるんじゃなくて、
-            // 中身の要素だけが変わるようなので、
-            // 同じ要素を対象にスタイルを変える
-            //
-            // (e.g. opacity)
-
-            parent.style.height = `${oldStackHeight}px`;
-            elems[0].style.opacity = 0;
-
-            this.waitDuringDuration()
-            .then(() => {
-              stack.shift();
-              this.set({stack});
-
-              if (convenient.type === 'text' && oldStackHeight !== 0) {
-                parent.style.maxHeight = 'auto';
-              } else {
-                parent.style.height = `${newStackHeight}px`;
-                parent.style.maxHeight = '';
-              }
-              elems[0].style.opacity = 1;
-            });
-          }
-        });
-      },
-      handle(e, item, type) {
-        e.stopPropagation();
-        const name = this.get('name');
-        const callbacks = this.get('callbacks');
-        const end = this.get('end');
-        const fn = callbacks[`${name}:${item.propName}`]
-
-        if (typeof fn === 'function') {
-          const answer = fn.call(
-            item,
-            {
-              step(data = {}) {
-                const {answer, step} = data;
-                store.dispatch(answerTalk({
-                  [name]: answer || item.value
-                }));
-
-                store.dispatch(stepTalk(step))
-              },
-              done(data = {}) {
-                let {answers} = store.getState();
-                answers = Object.assign({}, answers, {
-                  [name]: data.answer || item.value
-                });
-                end(answers);
-
-                store.dispatch(doneTalk());
-              },
-              cancel() {
-                console.log('todo');
-              }
-            }
-          );
-        } else {
-          store.dispatch(toggleConvenientItem(item.value, type));
+    onrender() {
+      this.observe('convenient', () => {
+        if (!this.get('convenient')) {
+          this.refs.box.style.height = 0 + 'px';
+          return
         }
+
+        const {helpers} = this.get();
+        const {waitDuringDuration} = helpers;
+
+        this.refs.inner.style.opacity = 0;
+
+        requestAnimationFrame(() => {
+          this.refs.box.style.height = this.refs.inner.clientHeight + 'px';
+        });
+
+        waitDuringDuration().then(() => {
+          this.refs.inner.style.opacity = 1;
+        });
+      });
+
+      this.observe('button', button => {
+        if (!this.get('helpers')) {
+          return;
+        }
+
+        const {helpers} = this.get();
+        const {waitDuringDuration} = helpers;
+
+        if (button && button.items.length > 0) {
+          waitDuringDuration().then(() => this.set({hasButton: true}));
+        } else {
+          waitDuringDuration().then(() => this.set({hasButton: false}));
+        }
+      });
+    },
+
+    methods: {
+      reset() {
+        this.refs.box.style.height = '';
+      },
+      handleInput(e, name, type) {
+        const input = e.currentTarget;
+
+        this.set({valid: input.value ? true : false});
+        store.dispatch(answerTalk({
+          name,
+          answer: input.value
+        }));
+      },
+      handle(e, name, type, item) {
+        e.stopPropagation();
+
+        const {answers} = store.getState()
+        const answer = answers[name] || [];
+        const [label, value] = item;
+
+        if (type === 'checkbox') {
+          const idx = answer.indexOf(value);
+          if (idx > -1) {
+            answer.splice(idx, 1);
+          } else {
+            answer.push(value);
+          }
+
+          store.dispatch(answerTalk({
+            name,
+            answer
+          }));
+        } else {
+          store.dispatch(answerTalk({
+            name,
+            answer: value
+          }));
+        }
+        // e.stopPropagation();
+        // const {name, callbacks, end} = this.get();
+        // const fn = callbacks[`${name}:${item.propName}`]
+        //
+        // if (typeof fn === 'function') {
+        //   const answer = fn.call(
+        //     item,
+        //     {
+        //       step(data = {}) {
+        //         const {answer, step} = data;
+        //         store.dispatch(answerTalk({
+        //           [name]: answer || item.value
+        //         }));
+        //
+        //         store.dispatch(stepTalk(step))
+        //       },
+        //       done(data = {}) {
+        //         let {answers} = store.getState();
+        //         answers = Object.assign({}, answers, {
+        //           [name]: data.answer || item.value
+        //         });
+        //         end(answers);
+        //
+        //         store.dispatch(doneTalk());
+        //       },
+        //       cancel() {
+        //         console.log('todo');
+        //       }
+        //     }
+        //   );
+        // } else {
+        //   store.dispatch(toggleConvenientItem(item.value, type));
+        // }
       }
     }
   }

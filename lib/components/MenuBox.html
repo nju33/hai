@@ -1,16 +1,17 @@
 <div class="{{className.menuBox}}">
   <div class="{{className.menu}}">
     <div class="{{className.leftBtnGroup}}">
-      <a role="button" class="{{className.menuBtn}} {{className.menuBtnDisable}}">
-        <span on:click="back()" class="{{className.backBtn}}"></span>
+
+      <a role="button" class="{{className.menuBtn}}" on:click="back()">
+        <span class="{{className.backBtn}} {{back.length > 0 ? '' : className.menuBtnDisable}}"></span>
       </a>
-      <a role="button" class="{{className.menuBtn}} {{className.menuBtnDisable}}">
-        <span on:click="prev()" class="{{className.prevBtn}}"></span>
+      <a role="button" class="{{className.menuBtn}}" on:click="forward()">
+        <span class="{{className.forwardBtn}} {{forward.length > 0 ? '' : className.menuBtnDisable}}"></span>
       </a>
     </div>
     <div class="{{className.rightBtnGroup}}">
-      <a role="button" class="{{className.menuBtn}}">
-        <span on:click="close()" class="{{className.closeBtn}}"></span>
+      <a role="button" class="{{className.menuBtn}}" on:click="close()">
+        <span class="{{className.closeBtn}}"></span>
       </a>
     </div>
   </div>
@@ -19,23 +20,31 @@
 <script>
   import store from '../store';
   import {resetTalks} from '../action';
-  // import {BACK, PREV, RESET} from '../action';
+  import {backTalk, forwardTalk} from '../action';
   import className  from '../class-name.json';
 
   export default {
     data() {
       return {
         className,
-        message: ''
+        back: [],
+        forward: []
       };
     },
 
     methods: {
-      back() {
-        store.dispatch(BACK);
+      reset() {
+        this.set({back: [], forward: []});
       },
-      prev() {
-        store.dispatch(PREV);
+      back() {
+        if (this.get('back').length > 0) {
+          store.dispatch(backTalk());
+        }
+      },
+      forward() {
+        if (this.get('forward').length > 0) {
+          store.dispatch(forwardTalk());
+        }
       },
       close() {
         store.dispatch(resetTalks());
