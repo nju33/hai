@@ -100,7 +100,7 @@
     talk1
       .open(e.currentTarget)
       .then(answers => {
-        // document.getElementById('answer').innerText = JSON.stringify(answers);
+        document.getElementById('answer').innerText = JSON.stringify(answers);
         console.log(answers);
       });
   }
