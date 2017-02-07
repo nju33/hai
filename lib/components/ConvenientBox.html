@@ -16,7 +16,7 @@
                 {{#each convenient.items as item}}
                   <li class="{{className.convenientItem}}">
                     <a role="convenient"
-                       class="{{className.convenientBtn}} {{convenient.type}} {{hasButton ? 'has-buttons' : 'has-not-buttons'}} {{selected(value, item[1], convenient.type)}}"
+                       class="{{className.convenientBtn}} {{convenient.type}} {{'hai__' + convenient.type}} {{hasButton ? 'has-buttons' : 'has-not-buttons'}} {{selected(value, item[1], convenient.type)}}"
                        on:click="handle(event, name, convenient.type, item)"
                     >
                       {{item[0]}}
