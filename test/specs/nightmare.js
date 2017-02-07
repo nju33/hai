@@ -6,8 +6,10 @@ const nightmare = new Nightmare({
 });
 
 test('food', async t => {
+  await nightmare
+    .goto('http://localhost:3333');
+
   const visible = await nightmare
-    .goto('http://localhost:3333')
     .click('#food')
     .wait(500)
     .visible('[class*=_box_]');
@@ -34,6 +36,13 @@ test('food', async t => {
     .visible('[class*=_box_]');
   t.false(completeFood);
 
+  const completeFoodResult = await nightmare
+    .evaluate(() => {
+      return JSON.parse(document.getElementById('answer').innerText);
+    });
+  t.is(completeFoodResult.type, 'Meat');
+  t.is(completeFoodResult.meat, 'beef');
+
   const completeFoodUsingInput = await nightmare
     .click('#food')
     .wait(1000)
@@ -45,10 +54,17 @@ test('food', async t => {
     .click('[class*=_buttonList_] a') // Next
     .wait(1000)
     .type('[class*=_convenientInput_]', 'foo')
-    .click('[class*=_buttonList_] a') // I got it
+    .click('[class*=_buttonList_] a') // Next
     .wait(1000)
     .click('[class*=_buttonList_] a') // I got it
     .wait(1000)
     .visible('[class*=_box_]');
   t.false(completeFoodUsingInput);
+
+  const completeFoodUsingInputResult = await nightmare
+    .evaluate(() => {
+      return JSON.parse(document.getElementById('answer').innerText);
+    });
+  t.is(completeFoodUsingInputResult.type, 'Meat');
+  t.is(completeFoodUsingInputResult.meat, 'foo');
 });

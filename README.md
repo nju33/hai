@@ -1,10 +1,8 @@
 # Hai
 
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo) [![Build Status](https://travis-ci.org/nju33/hai.svg?branch=master)](https://travis-ci.org/nju33/hai) ![Dependencies Status](https://david-dm.org/nju33/hai.svg)
 
-[![Build Status](https://travis-ci.org/nju33/hai.svg?branch=master)](https://travis-ci.org/nju33/hai)
-
-A small conversation library that happens at hand
+✋ A small conversation library that happens at hand
 
 <img src="https://github.com/nju33/hai/raw/master/screenshot.gif?raw=true" alt="Hai" width="300">
 
@@ -55,25 +53,23 @@ const Hai = require('@nju33/hai');
 
 ## API
 
-### `new Hai(talk)`
+### `hai = new Hai(talks)`
 
 Create an instance of Hai that Contains information about talk elements or callbacks. It can be used by passing it to openWith.
 
-(Below `hai` is an instance of `Hai`)
-
-#### `hai.name`
+#### `talk.name`
 
 Use for prefix of callback name.
 
-#### `hai.message`
+#### `talk.message`
 
 What I'd like to talk about here.
 
-#### `hai.convenient`
+#### `talk.convenient`
 
-##### `hai.convenient.type`
+##### `talk.convenient.type`
 
-Various types. (e.g. `text`, `radio`, `checkbox`)  
+Various types. (e.g. `text`, `input`, `radio`, `checkbox`)  
 Note that property values that you have to pass depend on type change
 
 ###### `type: text`
@@ -93,30 +89,18 @@ This is the only difference.
 
 TODO....
 
-#### `hai.buttons`
-
-It is mainly used for elements for callback firing.
+##### `type: input`
 
 TODO...
 
-### `Hai.openWith(targetElement, talks, callbacks)`
+#### `hai.open`
 
 TODO...
 
-### `Hai.on`
-
-TODO...
-
-## TODO?
-
-- [ ] Implement history (`back` `prev`)
-- [ ] Refactoring (To eliminate waste)
-- [ ] Add user customization options
-- [ ] Writing tests
-- [ ] More convenient type (e.g. `input`, `textarea`)
-- [ ] More variation (use lerna)  
-     For example, modal
+`hai.open.then(answers => ...)`;
 
 ## LICENSE
 
-MIT
+The MIT License (MIT)
+
+Copyright (c) 2016 nju33

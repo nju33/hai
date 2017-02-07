@@ -9,8 +9,7 @@
     "prepublish": "yarn prod",
     "preprod": "mkdir -p dist; NODE_ENV='production' node prod.js",
     "prod": "babili dist/hai.js --no-comments --minified -o dist/hai.min.js",
-    "_test": "xo && ava",
-    "test": "xo"
+    "test": "xo && ava test/specs/nightmare.js"
   },
   "repository": {
     "type": "git",
