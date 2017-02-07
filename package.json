@@ -5,12 +5,11 @@
   "main": "dist/hai.umd.js",
   "jsnext:main": "dist/hai.es.js",
   "scripts": {
-    "start": "node dev-server.js",
+    "start": "NODE_ENV='developement' node dev-server.js",
     "prepublish": "yarn prod",
     "preprod": "mkdir -p dist; NODE_ENV='production' node prod.js",
     "prod": "babili dist/hai.js --no-comments --minified -o dist/hai.min.js",
-    "_test": "xo && ava",
-    "test": "xo"
+    "test": "xo && ava test/specs/nightmare.js"
   },
   "repository": {
     "type": "git",
@@ -35,12 +34,12 @@
   },
   "devDependencies": {
     "autoprefixer": "^6.5.3",
-    "ava": "^0.17.0",
-    "babel-eslint": "6",
+    "ava": "^0.18.1",
+    "babel-eslint": "7",
     "babel-plugin-external-helpers": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.19.0",
-    "babel-preset-env": "^0.0.9",
-    "babili": "^0.0.9",
+    "babel-preset-env": "^1.1.8",
+    "babili": "^0.0.10",
     "browser-sync": "^2.18.2",
     "cssnano": "^3.8.1",
     "gulp": "^3.9.1",
@@ -48,13 +47,14 @@
     "gulp-postcss": "^6.2.0",
     "nightmare": "^2.8.1",
     "postcss-easings": "^0.3.0",
-    "postcss-modules": "^0.5.2",
-    "rollup": "^0.36.4",
+    "postcss-modules": "^0.6.4",
+    "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-json": "^2.0.2",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-string": "^2.0.2",
+    "rollup-plugin-strip": "^1.1.1",
     "rollup-plugin-svelte": "^1.0.0",
     "uglify-js": "^2.7.4",
     "xo": "^0.17.1"

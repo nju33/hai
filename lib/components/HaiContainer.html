@@ -1,6 +1,10 @@
-<div ref:cover class="{{className.cover}}"
+<div ref:cover class="{{className.cover}} {{visibility === 'visible' ? className.fadeIn : ''}}"
      on:click="close()">
-  <div ref:box class="{{className.box}}"
+  <svg xmlns="http://www.w3.org/2000/svg">
+    <symbol id="close" viewBox="0 0 10 10">
+    </symbol>
+  </svg>
+  <div ref:box class="{{className.box}} {{visibility === 'visible' ? className.fadeIn : ''}}"
     　　on:click="cancelEvent(event)"
   ></div>
 </div>
@@ -11,18 +15,25 @@
   import {resetTalks} from '../action';
   import {requestAnimationFrame} from '../helpers';
 
-  const DURATION = 200;
   const BITE = 20;
-  let visibility = 'hidden';
 
   export default {
     data() {
       return {
-        className,
+        visibility: 'hidden',
+        className
       }
     },
 
     onrender() {
+      this.observe('boundingClientRect', () => {
+        if (!this.get('boundingClientRect')) {
+          return;
+        }
+
+        const {boundingClientRect} = this.get();
+        this.setPosition(boundingClientRect);
+      });
     },
 
     methods: {
@@ -36,7 +47,7 @@
         this.refs.box.appendChild(elem);
       },
       isVisible() {
-        return visibility === 'visible';
+        return this.get('visibility') === 'visible';
       },
       toBlockElements() {
         this.refs.cover.style.display = 'block';
@@ -46,7 +57,8 @@
         this.refs.cover.style.display = 'none';
         this.refs.box.style.display = 'none';
       },
-      setPosition({width, height, top, right, bottom, left}) {
+      setPosition() {
+        const {top, left} = this.get('boundingClientRect');
         const boxHeight = this.refs.box.clientHeight;
         const boxWidth = this.refs.box.clientWidth;
         const requiredVirticalArea = top + boxHeight;
@@ -82,33 +94,34 @@
         this.refs.cover.classList.remove(className.fadeIn);
         this.refs.box.classList.remove(className.fadeIn);
       },
-      waitDuringDuration() {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve();
-          }, DURATION);
-        });
-      },
-      show(bound) {
+      show() {
+        const {helpers} = this.get();
+        const {waitDuringDuration} = helpers;
+
         return new Promise(resolve => {
           this.toBlockElements();
-          this.setPosition(bound);
+          this.setPosition();
+
           requestAnimationFrame(() => {
+            console.info('container:fadeIn');
             this.fadeIn();
-            this.waitDuringDuration().then(() => {
-              visibility = 'visible';
+            waitDuringDuration().then(() => {
+              this.set({visibility: 'visible'});
               resolve();
             });
           });
         });
       },
       hide() {
+        const {helpers} = this.get();
+        const {waitDuringDuration} = helpers;
+
         return new Promise(resolve => {
+          console.info('container:fadeOut');
           this.fadeOut();
-          this.waitDuringDuration()
-          .then(() => {
+          waitDuringDuration().then(() => {
             this.toNoneElements();
-            visibility = 'hidden';
+            this.set({visibility: 'hidden'});
             resolve();
           });
         });

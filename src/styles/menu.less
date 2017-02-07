@@ -32,15 +32,15 @@
   position: relative;
   width: @icon-size;
   height: 100%;
-  transition: @duration @easing;
   color: @icon-color;
+  cursor: pointer;
 
-  &:not(.menuBtnDisable):hover {
+  &:not(.menuBtnDisable):hover span {
     color: @accent-color;
   }
 }
 
-.menuBtnDisable {
+.menuBtnDisable.menuBtnDisable {
   color: @bg-color;
 }
 
@@ -48,80 +48,49 @@
   display: table-cell;
 }
 
-.backBtn {
-  .menu-common;
-  color: inherit;
-  position: relative;
-  top: -4px;
+.historyBtn(@deg) {
   display: inline-block;
-  width: @icon-size * .8;
-  height: 1px;
-  background-color: currentColor;
-
-  &:before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 50%;
-    transform: translateY(50%) rotate(-135deg);
-    width: @icon-size * .5;
-    height: @icon-size * .5;
-    border-top: solid 1px currentColor;
-    border-right: solid 1px currentColor;
-  }
+  width: 8px;
+  height: 8px;
+  color: #ccc;
+  border-top: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+  transition: @duration @easing;
+  transform: rotate(@deg);
 }
 
-.prevBtn {
-  .menu-common;
-  color: inherit;
-  position: relative;
-  top: -4px;
-  display: inline-block;
-  width: @icon-size * .8;
-  height: 1px;
-  background-color: currentColor;
+.backBtn {
+  .historyBtn(-45deg);
+}
 
-  &:before {
-    content: '';
-    position: absolute;
-    bottom: 50%;
-    right: 0;
-    // right: .5px;
-    transform: translateY(50%) rotate(45deg);
-    width: @icon-size * .5;
-    height: @icon-size * .5;
-    border-top: solid 1px currentColor;
-    border-right: solid 1px currentColor;
-  }
+.forwardBtn {
+  .historyBtn(135deg);
 }
 
 .closeBtn {
-  .menu-common;
-  color: inherit;
   position: relative;
-  top: 2px;
+  top: 3px;
   display: inline-block;
-  width: @icon-size;
-  height: @icon-size;
-  cursor: pointer;
+  width: 8px;
+  height: 8px;
+  color: #ccc;
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    display: block;
+    width: 12px;
+    border-top: 1px solid currentColor;
+    transform-origin: center center;
+    transition: @duration @easing;
+  }
 
   &:before {
-    content: '';
-    position: absolute;
-    top: 10px;
-    width: @icon-size;
-    height: 1px;
-    background-color: currentColor;
-    transform: rotate(-45deg);
+    transform: rotate(45deg);
   }
 
   &:after {
-    content: '';
-    position: absolute;
-    top: 10px;
-    width: @icon-size;
-    height: 1px;
-    background-color: currentColor;
-    transform: rotate(45deg);
+    transform: rotate(-45deg);
   }
 }
