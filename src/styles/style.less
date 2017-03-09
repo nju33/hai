@@ -1,6 +1,54 @@
 @import "variables";
 @import "menu";
 
+.dark-theme {
+  .dark-variables;
+
+  .cover svg {
+    stroke: @text-subcolor;
+  }
+
+  .messageBox,
+  .convenientBox,
+  .buttonBox
+  .buttonBtn {
+    color: @text-color;
+  }
+
+  .box,
+  .messageBox,
+  .convenientBox,
+  .buttonBox {
+    background: @bg-color;
+  }
+
+  .buttonBtnDisabled {
+    color: lighten(@bg-color, 30%);
+  }
+
+  .convenientScroller,
+  .convenientInput {
+    background: @bg-subcolor;
+  }
+
+  .convenientBtnActive:global(.has-buttons):global(.checkbox):before,
+  .convenientBtnActive:global(.has-buttons):global(.radio):before {
+    color: @accent-color;
+  }
+
+  .convenientBtn:global(.has-not-buttons):hover,
+  .buttonBtn:not(.buttonBtnDisabled):hover,
+  .convenientBtnActive:global(.has-not-buttons) {
+    background: @accent-color;
+  }
+
+  .convenientInput {
+    &:focus {
+      border-color: @accent-color;
+    }
+  }
+}
+
 .cover {
   display: none;
   opacity: 0;
@@ -10,13 +58,12 @@
   z-index: 99999999;
   width: 100vw;
   height: 100vh;
-  transition: .2s @easeInOutQuart;
+  transition: .2s @easing;
   font-size: .89em;
 
   & svg {
     width: 10px;
     height: 10px;
-    stroke: @text-subcolor;
   }
 }
 
@@ -26,7 +73,6 @@
   position: absolute;
   // max-width: 13em;
   width: 13em;
-  background: @bg-color;
   transition:
     opacity .2s easeInOutQuart,
     left .2s easeInOutQuart,
@@ -48,8 +94,6 @@
 }
 
 .messageBox {
-  color: @text-color;
-  background: @bg-color;
   padding: @v-gutter @h-gutter;
   transition: @duration @easing;
 }
@@ -58,8 +102,6 @@
 }
 
 .convenientBox {
-  color: @text-color;
-  background: @bg-color;
   transition: @duration @easing;
 }
 
@@ -88,7 +130,6 @@
   overflow: auto;
   max-height: 13em;
   padding: .5em .75em;
-  background: @bg-subcolor;
 }
 
 .convenientInput {
@@ -96,14 +137,13 @@
   box-sizing: border-box;
   padding: .5em .75em;
   border: 1px solid transparent;
-  background: @bg-subcolor;
   outline: none;
   font-size: 1.1em;
   color: #fff;
   transition: @duration @easing;
 
   &:focus {
-    border: 1px solid @accent-color;
+    border: 1px solid;
   }
 }
 
@@ -117,9 +157,9 @@
   user-select: none;
   cursor: pointer;
 
-  &:global(.has-not-buttons):hover {
-    background: @accent-color;
-  }
+  // &:global(.has-not-buttons):hover {
+  //   background: @accent-color;
+  // }
 
   &:global(.has-buttons):global(.checkbox),
   &:global(.has-buttons):global(.radio) {
@@ -163,24 +203,24 @@
   &:global(.has-buttons):global(.checkbox):before {
     width: .7em;
     height: .3em;
-    color: @accent-color;
+    // color: @accent-color;
   }
 
   &:global(.has-buttons):global(.radio):before {
     height: .5em;
-    color: @accent-color;
+    // color: @accent-color;
     background: currentColor;
     border-color: currentColor;
   }
 
-  &:global(.has-not-buttons) {
-    background: @accent-color;
-  }
+  // &:global(.has-not-buttons) {
+  //   background: @accent-color;
+  // }
 }
 
 .buttonBox {
-  color: @text-color;
-  background: @bg-color;
+  // color: @text-color;
+  // background: @bg-color;
   transition: @duration @easing;
 }
 
@@ -218,17 +258,17 @@
 .buttonBtn {
   display: block;
   padding: @v-gutter @h-gutter;
-  color: @text-color;
+  // color: @text-color;
   transition: .2s easeInOutQuart;
   user-select: none;
   cursor: pointer;
 
-  &:not(.buttonBtnDisabled):hover {
-    background: @accent-color;
-  }
+  // &:not(.buttonBtnDisabled):hover {
+  //   background: @accent-color;
+  // }
 }
 
 .buttonBtnDisabled {
   cursor: default;
-  color: lighten(@bg-color, 30%);
+  // color: lighten(@bg-color, 30%);
 }
