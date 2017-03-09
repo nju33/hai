@@ -15,7 +15,7 @@
       };
     },
 
-    onrender() {
+    oncreate() {
       this.observe('message', () => {
         if (!this.get('message')) {
           return;

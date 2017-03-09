@@ -4,9 +4,7 @@
     <symbol id="close" viewBox="0 0 10 10">
     </symbol>
   </svg>
-  <div ref:box class="{{className.box}} {{className[config.theme + '-theme']}} {{visibility === 'visible' ? className.fadeIn : ''}}"
-    　　on:click="cancelEvent(event)"
-  ></div>
+  <div ref:box class="{{className.box}} {{className[config.theme + '-theme']}} {{visibility === 'visible' ? className.fadeIn : ''}}" on:click="cancelEvent(event)"></div>
 </div>
 
 <script>
@@ -24,7 +22,7 @@
       }
     },
 
-    onrender() {
+    oncreate() {
       this.observe('boundingClientRect', () => {
         if (!this.get('boundingClientRect')) {
           return;

@@ -61,7 +61,7 @@
       }
     },
 
-    onrender() {
+    oncreate() {
       this.observe('convenient', () => {
         if (!this.get('convenient')) {
           this.refs.box.style.height = 0 + 'px';
