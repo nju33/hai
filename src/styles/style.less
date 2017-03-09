@@ -10,13 +10,13 @@
   z-index: 99999999;
   width: 100vw;
   height: 100vh;
-  transition: .2s easeInOutQuart;
+  transition: .2s @easeInOutQuart;
   font-size: .89em;
 
   & svg {
     width: 10px;
     height: 10px;
-    stroke: #f8f8f8;
+    stroke: @text-subcolor;
   }
 }
 
@@ -26,7 +26,7 @@
   position: absolute;
   // max-width: 13em;
   width: 13em;
-  background: #333;
+  background: @bg-color;
   transition:
     opacity .2s easeInOutQuart,
     left .2s easeInOutQuart,
@@ -88,7 +88,7 @@
   overflow: auto;
   max-height: 13em;
   padding: .5em .75em;
-  background: #434343;
+  background: @bg-subcolor;
 }
 
 .convenientInput {
@@ -96,7 +96,7 @@
   box-sizing: border-box;
   padding: .5em .75em;
   border: 1px solid transparent;
-  background: #434343;
+  background: @bg-subcolor;
   outline: none;
   font-size: 1.1em;
   color: #fff;
