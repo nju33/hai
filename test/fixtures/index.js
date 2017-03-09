@@ -1,4 +1,5 @@
 (function () {
+  Hai.config.theme = 'light';
   var talk1 = new Hai([
     {
       name: 'question',

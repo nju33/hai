@@ -11,6 +11,55 @@
   .messageBox,
   .convenientBox,
   .buttonBox
+  .buttonBtn,
+  .convenientInput {
+    color: @text-color;
+  }
+
+  .box,
+  .messageBox,
+  .convenientBox,
+  .buttonBox {
+    background: @bg-color;
+  }
+
+  .buttonBtnDisabled {
+    color: lighten(@bg-color, 30%);
+  }
+
+  .convenientScroller,
+  .convenientInput {
+    background: @bg-subcolor;
+  }
+
+  .convenientBtnActive:global(.has-buttons):global(.checkbox):before,
+  .convenientBtnActive:global(.has-buttons):global(.radio):before {
+    color: @accent-color;
+  }
+
+  .convenientBtn:global(.has-not-buttons):hover,
+  .buttonBtn:not(.buttonBtnDisabled):hover,
+  .convenientBtnActive:global(.has-not-buttons) {
+    background: @accent-color;
+  }
+
+  .convenientInput {
+    &:focus {
+      border-color: @accent-color;
+    }
+  }
+}
+
+.light-theme {
+  .light-variables;
+
+  .cover svg {
+    stroke: @text-subcolor;
+  }
+
+  .messageBox,
+  .convenientBox,
+  .buttonBox
   .buttonBtn {
     color: @text-color;
   }
@@ -71,7 +120,6 @@
   display: none;
   opacity: 0;
   position: absolute;
-  // max-width: 13em;
   width: 13em;
   transition:
     opacity .2s easeInOutQuart,
@@ -112,8 +160,6 @@
 }
 
 .convenientGroup {
-  // opacity: 0;
-  // transition: @duration @easing;
 }
 
 .convenientContent {
@@ -139,7 +185,6 @@
   border: 1px solid transparent;
   outline: none;
   font-size: 1.1em;
-  color: #fff;
   transition: @duration @easing;
 
   &:focus {
@@ -156,10 +201,6 @@
     background @duration @easing;
   user-select: none;
   cursor: pointer;
-
-  // &:global(.has-not-buttons):hover {
-  //   background: @accent-color;
-  // }
 
   &:global(.has-buttons):global(.checkbox),
   &:global(.has-buttons):global(.radio) {
@@ -203,24 +244,16 @@
   &:global(.has-buttons):global(.checkbox):before {
     width: .7em;
     height: .3em;
-    // color: @accent-color;
   }
 
   &:global(.has-buttons):global(.radio):before {
     height: .5em;
-    // color: @accent-color;
     background: currentColor;
     border-color: currentColor;
   }
-
-  // &:global(.has-not-buttons) {
-  //   background: @accent-color;
-  // }
 }
 
 .buttonBox {
-  // color: @text-color;
-  // background: @bg-color;
   transition: @duration @easing;
 }
 
@@ -236,7 +269,6 @@
 .buttonGroupDeactive {
   opacity: 0;
   margin-top: -100%;
-  // height: 0;
 }
 
 .buttonList {
@@ -258,17 +290,11 @@
 .buttonBtn {
   display: block;
   padding: @v-gutter @h-gutter;
-  // color: @text-color;
   transition: .2s easeInOutQuart;
   user-select: none;
   cursor: pointer;
-
-  // &:not(.buttonBtnDisabled):hover {
-  //   background: @accent-color;
-  // }
 }
 
 .buttonBtnDisabled {
   cursor: default;
-  // color: lighten(@bg-color, 30%);
 }

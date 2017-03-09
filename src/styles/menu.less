@@ -1,8 +1,30 @@
 @import "variables";
 
-
 .dark-theme {
   .dark-variables;
+
+  .menuBox {
+    background: @bg-color;
+  }
+
+  .menuBtn,
+  .backBtn,
+  .forwardBtn,
+  .closeBtn {
+    color: @menu-icon-color;
+  }
+
+  .menuBtnDisable.menuBtnDisable {
+    color: @bg-color;
+  }
+
+  .menuBtn:not(.menuBtnDisable):hover span {
+    color: @accent-color;
+  }
+}
+
+.light-theme {
+  .light-variables;
 
   .menuBox {
     background: @bg-color;
@@ -28,7 +50,6 @@
 }
 
 .menu {
-  // .menu-common;
   min-height: @icon-size * 1.5;
   display: table;
 }
@@ -41,22 +62,12 @@
 }
 
 .menuBtn {
-  // .menu-common;
   display: inline-block;
   position: relative;
   width: @icon-size;
   height: 100%;
-  // color: @icon-color;
   cursor: pointer;
-
-  // &:not(.menuBtnDisable):hover span {
-  //   color: @accent-color;
-  // }
 }
-
-// .menuBtnDisable.menuBtnDisable {
-//   color: @bg-color;
-// }
 
 .rightBtnGroup {
   display: table-cell;
@@ -66,7 +77,6 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  color: #ccc;
   border-top: 1px solid currentColor;
   border-left: 1px solid currentColor;
   transition: @duration @easing;
@@ -87,7 +97,6 @@
   display: inline-block;
   width: 8px;
   height: 8px;
-  color: #ccc;
 
   &:before,
   &:after {
