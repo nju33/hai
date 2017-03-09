@@ -57,6 +57,12 @@ const Hai = require('@nju33/hai');
 
 Create an instance of Hai that Contains information about talk elements or callbacks. It can be used by passing it to openWith.
 
+### `Hai.config`
+
+### `Hai.config.theme`
+
+Dark(default) or light.
+
 #### `talk.name`
 
 Use for prefix of callback name.
