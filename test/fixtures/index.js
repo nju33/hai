@@ -94,8 +94,12 @@
       ]
     }
   ]);
-  var food = document.getElementById('food');
-  food.addEventListener('click', handleFood, null);
+  var foods = document.getElementsByClassName('food');
+  Array.prototype.slice.call(foods).forEach(food => {
+    return (food => {
+      food.addEventListener('click', handleFood, null);
+    })(food);
+  });
   function handleFood(e) {
     talk1
       .open(e.currentTarget)

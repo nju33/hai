@@ -15,8 +15,6 @@
   import {resetTalks} from '../action';
   import {requestAnimationFrame} from '../helpers';
 
-  const BITE = 20;
-
   export default {
     data() {
       return {
@@ -61,38 +59,43 @@
         const {top, left} = this.get('boundingClientRect');
         const boxHeight = this.refs.box.clientHeight;
         const boxWidth = this.refs.box.clientWidth;
-        const requiredVirticalArea = top + boxHeight;
+        const boxOffsetLeft = this.refs.box.offsetLeft;
+        const boxOffsetTop = this.refs.box.offsetTop
+        const requiredVirticalArea = top + boxHeight ;
         const requiredHorizontalArea = left + boxWidth;
         let virticalOverAmount = 0;
         let horizontalOverAmount = 0;
 
-        if (requiredVirticalArea > window.innerHeight) {
-          virticalOverAmount = requiredVirticalArea - window.innerHeight;
+        if (boxOffsetTop < 0) {
+          virticalOverAmount = boxOffsetTop + 10;
+        } else if (requiredVirticalArea > window.innerHeight) {
+          virticalOverAmount = requiredVirticalArea - window.innerHeight + 10;
         }
 
-        if (requiredHorizontalArea > window.innerWidth) {
-          horizontalOverAmount = requiredHorizontalArea - window.innerWidth;
+        if (boxOffsetLeft < 0) {
+          horizontalOverAmount = boxOffsetLeft + 10;
+        } else if (requiredHorizontalArea > window.innerWidth) {
+          horizontalOverAmount = requiredHorizontalArea - window.innerWidth + 10;
         }
 
-        if (window.innerHeight - requiredVirticalArea > BITE) {
-          this.refs.box.style.top = `${top - virticalOverAmount - BITE}px`;
-        } else {
-          this.refs.box.style.top = `${top - virticalOverAmount}px`;
-        }
-
-        if (window.innerWidth - requiredHorizontalArea > BITE) {
-          this.refs.box.style.left = `${left - horizontalOverAmount - BITE}px`;
-        } else {
-          this.refs.box.style.left = `${left - horizontalOverAmount}px`;
-        }
+        this.refs.box.style.top = `${top - virticalOverAmount}px`;
+        this.refs.box.style.left = `${left - horizontalOverAmount}px`;
       },
       fadeIn() {
+        this.refs.box.style.transition = 'none';
         this.refs.cover.classList.add(className.fadeIn);
         this.refs.box.classList.add(className.fadeIn);
+        setTimeout(() => {
+          this.refs.box.style.transition = '';
+        }, 200);
       },
       fadeOut() {
         this.refs.cover.classList.remove(className.fadeIn);
         this.refs.box.classList.remove(className.fadeIn);
+        setTimeout(() => {
+          this.refs.box.style.top = '';
+          this.refs.box.style.left = '';
+        }, 200);
       },
       show() {
         const {helpers} = this.get();
@@ -103,7 +106,9 @@
           this.setPosition();
 
           requestAnimationFrame(() => {
-            console.info('container:fadeIn');
+            if (process.env.NODE_ENV === 'development') {
+              console.info('container:fadeIn');
+            }
             this.fadeIn();
             waitDuringDuration().then(() => {
               this.set({visibility: 'visible'});
@@ -117,7 +122,9 @@
         const {waitDuringDuration} = helpers;
 
         return new Promise(resolve => {
-          console.info('container:fadeOut');
+          if (process.env.NODE_ENV === 'development') {
+            console.info('container:fadeOut');
+          }
           this.fadeOut();
           waitDuringDuration().then(() => {
             this.toNoneElements();
