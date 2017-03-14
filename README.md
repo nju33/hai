@@ -1,4 +1,4 @@
-# Hai
+<h1><img src="https://github.com/nju33/hai/blob/master/images/icon_32x32@2x.png?raw=true" width=30>&nbsp;Hai</h1>
 
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo) [![Build Status](https://travis-ci.org/nju33/hai.svg?branch=master)](https://travis-ci.org/nju33/hai) ![Dependencies Status](https://david-dm.org/nju33/hai.svg)
 
