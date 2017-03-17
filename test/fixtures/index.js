@@ -8,8 +8,8 @@
         ['Yes', function (next, names) {
           next(names.type);
         }],
-        ['No', function (next) {
-          next(Hai.CANCEL);
+        ['No', function (next, names, actions) {
+          next(actions.cancel);
         }]
       ]
     },
@@ -89,8 +89,8 @@
         text: 'I will make it in a hurry, please wait for a while.'
       },
       button: [
-        ['I got it', function (next) {
-          next(Hai.DONE);
+        ['I got it', function (next, names, actions) {
+          next(actions.done);
         }, false]
       ]
     }
@@ -118,21 +118,21 @@
         type: 'text',
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.'
       },
-      buttons: [
-        ['No', function (next) {
-          next(Hai.CANCEL)
+      button: [
+        ['No', function (next, names, actions) {
+          next(actions.cancel);
         }],
         ['Agree', function (next, names) {
-          next(names.done)
+          next(names.done);
         }]
       ]
     },
     {
       name: 'done',
       message: 'thanks',
-      buttons: [
-        ['Done', function (next) {
-          next(Hai.DONE);
+      button: [
+        ['Done', function (next, names, actions) {
+          next(actions.done);
         }, false]
       ]
     }

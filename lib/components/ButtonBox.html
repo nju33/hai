@@ -23,6 +23,7 @@
   import {answerTalk, doneTalk} from '../action';
   import className from '../class-name.json';
   import {requestAnimationFrame, next} from '../helpers';
+  import Hai from '../hai';
 
   export default {
     data() {
@@ -104,7 +105,10 @@
           }));
         }
 
-        callback.call(this.get(), next, store.getState().names);
+        callback.call(this.get(), next, store.getState().names, {
+          done: Hai.DONE,
+          cancel: Hai.CANCEL
+        });
 
         // if (typeof fn === 'function') {
         //   const obj = (() => {
