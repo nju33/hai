@@ -105,6 +105,11 @@ TODO...
 
 `hai.open.then(answers => ...)`;
 
+## Related
+
+- [vue-hai](https://github.com/nju33/vue-hai)
+- [react-hai](https://github.com/nju33/react-hai)
+
 ## LICENSE
 
 The MIT License (MIT)
